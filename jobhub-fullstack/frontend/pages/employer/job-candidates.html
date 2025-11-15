@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Ứng Viên - JobHub</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #3a86ff;
+            --secondary: #8338ec;
+            --success: #06d6a0;
+            --warning: #ffbe0b;
+            --danger: #ef476f;
+            --light: #f8f9fa;
+            --dark: #212529;
+        }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        
+        .candidates-container {
+            min-height: 100vh;
+            background: #f8f9fa;
+            padding-top: 80px;
+        }
+        
+        .candidate-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .candidate-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .stats-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s;
+        }
+        
+        .stats-card:hover {
+            transform: translateY(-3px);
+        }
+        
+        .status-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 500;
+            font-size: 0.8rem;
+        }
+        
+        .candidate-avatar {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #e9ecef;
+        }
+        
+        .compatibility-badge {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.9rem;
+            border: 3px solid white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .compatibility-high {
+            background: linear-gradient(135deg, #06d6a0, #04b586);
+            color: white;
+        }
+        
+        .compatibility-medium {
+            background: linear-gradient(135deg, #ffbe0b, #e6a800);
+            color: white;
+        }
+        
+        .compatibility-low {
+            background: linear-gradient(135deg, #ef476f, #d43a5c);
+            color: white;
+        }
+        
+        .navbar-brand {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 700;
+            color: var(--primary) !important;
+        }
+        
+        .logo-icon {
+            background: var(--primary);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .nav-pills .nav-link.active {
+            background-color: var(--primary);
+            font-weight: 500;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .btn-primary:hover {
+            background-color: #2a75e6;
+            border-color: #2a75e6;
+        }
+        
+        .sidebar-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        
+        .sidebar-card .card-header {
+            background: white;
+            border-bottom: 1px solid #e9ecef;
+            padding: 1rem 1.5rem;
+            font-weight: 600;
+        }
+        
+        .sidebar-card .card-body {
+            padding: 1.5rem;
+        }
+        
+        .note-item, .interview-item {
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid #e9ecef;
+        }
+        
+        .note-item:last-child, .interview-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        
+        .custom-checkbox {
+            transform: scale(1.2);
+        }
+        
+        .job-selector {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .filter-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        footer {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+        }
+        
+        .footer-links a {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        
+        .footer-links a:hover {
+            color: white;
+        }
+        
+        .pagination .page-link {
+            color: var(--primary);
+            border: 1px solid #dee2e6;
+        }
+        
+        .pagination .page-item.active .page-link {
+            background-color: var(--primary);
+            border-color: var(--primary);
+        }
+        
+        .action-dropdown .dropdown-menu {
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+        
+        .action-dropdown .dropdown-item {
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            margin: 0.1rem 0.5rem;
+            width: auto;
+        }
+        
+        .action-dropdown .dropdown-item:hover {
+            background-color: #f8f9fa;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6c757d;
+        }
+        
+        .empty-state i {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: #dee2e6;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky-top bg-white shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="../index.html">
+                    <div class="logo-icon me-2">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <span>JobHub</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="employer-dashboard.html">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="post-job.html">Đăng tin</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="manage-jobs.html">Quản lý tin</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="job-candidates.html">Ứng viên</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="employer-profile.html">Hồ sơ</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-2 align-items-center">
+                        <a href="../shared/notifications.html" class="btn btn-outline-secondary btn-sm position-relative">
+                            <i class="bi bi-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">5</span>
+                        </a>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-building me-1"></i>Tech Corp
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="employer-profile.html">Hồ sơ công ty</a></li>
+                                <li><a class="dropdown-item" href="../shared/settings.html">Cài đặt</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="../index.html">Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="candidates-container">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="fw-bold mb-1">Quản lý ứng viên</h1>
+                            <p class="text-muted mb-0">Theo dõi và đánh giá tất cả ứng viên</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary" onclick="exportCandidates()">
+                                <i class="bi bi-download me-2"></i>Xuất danh sách
+                            </button>
+                            <button class="btn btn-outline-success" onclick="bulkInvite()">
+                                <i class="bi bi-send me-2"></i>Mời PV hàng loạt
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Job Selection -->
+            <div class="job-selector">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h5 class="fw-bold mb-1">Frontend Developer Intern</h5>
+                        <p class="text-muted mb-0">Tech Corp Vietnam • 45 ứng viên • Đang tuyển</p>
+                    </div>
+                    <div class="col-md-4">
+                        <select class="form-select" onchange="changeJob(this.value)">
+                            <option value="1" selected>Frontend Developer Intern</option>
+                            <option value="2">Backend Developer</option>
+                            <option value="3">UI/UX Designer</option>
+                            <option value="4">Fullstack Developer</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h3 class="fw-bold text-primary">45</h3>
+                        <p class="text-muted mb-0">Tổng ứng viên</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h3 class="fw-bold text-warning">12</h3>
+                        <p class="text-muted mb-0">Chưa xem</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h3 class="fw-bold text-info">25</h3>
+                        <p class="text-muted mb-0">Đã xem</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h3 class="fw-bold text-success">8</h3>
+                        <p class="text-muted mb-0">Mời phỏng vấn</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Candidates List -->
+                <div class="col-lg-8">
+                    <!-- Filter Tabs -->
+                    <ul class="nav nav-pills mb-4" id="candidateTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="all-tab" data-bs-toggle="pill" data-bs-target="#all" type="button">
+                                Tất cả
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="new-tab" data-bs-toggle="pill" data-bs-target="#new" type="button">
+                                Chưa xem
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="viewed-tab" data-bs-toggle="pill" data-bs-target="#viewed" type="button">
+                                Đã xem
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="interview-tab" data-bs-toggle="pill" data-bs-target="#interview" type="button">
+                                Mời PV
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="rejected-tab" data-bs-toggle="pill" data-bs-target="#rejected" type="button">
+                                Từ chối
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Search and Filter -->
+                    <div class="filter-section">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <span class="input-group-text bg-transparent border-end-0">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                    <input type="text" class="form-control border-start-0" placeholder="Tìm kiếm ứng viên..." id="searchCandidates">
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="sortCandidates">
+                                    <option value="newest">Mới nhất</option>
+                                    <option value="oldest">Cũ nhất</option>
+                                    <option value="compatibility">Độ phù hợp</option>
+                                    <option value="name">Tên A-Z</option>
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <select class="form-select" id="filterCompatibility">
+                                    <option value="all">Tất cả độ phù hợp</option>
+                                    <option value="high">Cao (80-100%)</option>
+                                    <option value="medium">Trung bình (50-79%)</option>
+                                    <option value="low">Thấp (0-49%)</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Candidates Tab Content -->
+                    <div class="tab-content" id="candidateTabsContent">
+                        <!-- All Candidates Tab -->
+                        <div class="tab-pane fade show active" id="all" role="tabpanel">
+                            <!-- Candidate Cards will be loaded here -->
+                            <div id="candidatesList">
+                                <!-- Candidate Card 1 -->
+                                <div class="candidate-card">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <input type="checkbox" class="form-check-input custom-checkbox mt-0 me-2 candidate-checkbox" data-id="1">
+                                        </div>
+                                        <div class="col-auto">
+                                            <img src="https://ui-avatars.com/api/?name=Nguyễn+Văn+A&background=3a86ff&color=fff" alt="Avatar" class="candidate-avatar">
+                                        </div>
+                                        <div class="col">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h5 class="fw-bold mb-1">Nguyễn Văn A</h5>
+                                                    <p class="text-muted mb-1">Sinh viên năm 4 - ĐH Bách Khoa Hà Nội</p>
+                                                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                                                        <span class="badge bg-light text-dark">
+                                                            <i class="bi bi-envelope me-1"></i>nguyenvana@email.com
+                                                        </span>
+                                                        <span class="badge bg-light text-dark">
+                                                            <i class="bi bi-telephone me-1"></i>0123 456 789
+                                                        </span>
+                                                        <span class="badge bg-primary bg-opacity-10 text-primary">
+                                                            <i class="bi bi-file-text me-1"></i>Đã gửi CV
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <div class="compatibility-badge compatibility-high mb-2 mx-auto">92%</div>
+                                                    <span class="status-badge bg-warning bg-opacity-25 text-warning">Chưa xem</span>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3 d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <span class="text-muted">Ứng tuyển: 2 giờ trước</span>
+                                                </div>
+                                                <div class="d-flex gap-2">
+                                                    <button class="btn btn-outline-primary btn-sm" onclick="viewCandidate(1)">
+                                                        <i class="bi bi-eye me-1"></i>Xem CV
+                                                    </button>
+                                                    <button class="btn btn-outline-success btn-sm" onclick="markAsViewed(1)">
+                                                        <i class="bi bi-check2 me-1"></i>Đánh dấu đã xem
+                                                    </button>
+                                                    <div class="dropdown action-dropdown">
+                                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                            Hành động
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a class="dropdown-item" href="#" onclick="inviteInterview(1)"><i class="bi bi-calendar-check me-2"></i>Mời phỏng vấn</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="rejectCandidate(1)"><i class="bi bi-x-circle me-2"></i>Từ chối</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="addNote(1)"><i class="bi bi-pencil me-2"></i>Thêm ghi chú</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Candidate Card 2 -->
+                                <div class="candidate-card">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <input type="checkbox" class="form-check-input custom-checkbox mt-0 me-2 candidate-checkbox" data-id="2">
+                                        </div>
+                                        <div class="col-auto">
+                                            <img src="https://ui-avatars.com/api/?name=Trần+Thị+B&background=8338ec&color=fff" alt="Avatar" class="candidate-avatar">
+                                        </div>
+                                        <div class="col">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h5 class="fw-bold mb-1">Trần Thị B</h5>
+                                                    <p class="text-muted mb-1">Fresher - ĐH Công nghệ Thông tin</p>
+                                                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                                                        <span class="badge bg-light text-dark">
+                                                            <i class="bi bi-envelope me-1"></i>tranthib@email.com
+                                                        </span>
+                                                        <span class="badge bg-light text-dark">
+                                                            <i class="bi bi-telephone me-1"></i>0987 654 321
+                                                        </span>
+                                                        <span class="badge bg-primary bg-opacity-10 text-primary">
+                                                            <i class="bi bi-file-text me-1"></i>Đã gửi CV
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <div class="compatibility-badge compatibility-medium mb-2 mx-auto">75%</div>
+                                                    <span class="status-badge bg-info bg-opacity-25 text-info">Đã xem</span>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3 d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <span class="text-muted">Ứng tuyển: 1 ngày trước</span>
+                                                    <span class="badge bg-success bg-opacity-25 text-success ms-2">
+                                                        <i class="bi bi-star me-1"></i>Đánh giá tốt
+                                                    </span>
+                                                </div>
+                                                <div class="d-flex gap-2">
+                                                    <button class="btn btn-outline-primary btn-sm" onclick="viewCandidate(2)">
+                                                        <i class="bi bi-eye me-1"></i>Xem CV
+                                                    </button>
+                                                    <button class="btn btn-outline-success btn-sm" onclick="inviteInterview(2)">
+                                                        <i class="bi bi-calendar-check me-1"></i>Mời PV
+                                                    </button>
+                                                    <div class="dropdown action-dropdown">
+                                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                            Hành động
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a class="dropdown-item" href="#" onclick="markAsNew(2)"><i class="bi bi-arrow-counterclockwise me-2"></i>Đánh dấu chưa xem</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="rejectCandidate(2)"><i class="bi bi-x-circle me-2"></i>Từ chối</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="addNote(2)"><i class="bi bi-pencil me-2"></i>Thêm ghi chú</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Candidate Card 3 -->
+                                <div class="candidate-card">
+                                    <div class="row align-items-center">
+                                        <div class="col-auto">
+                                            <input type="checkbox" class="form-check-input custom-checkbox mt-0 me-2 candidate-checkbox" data-id="3">
+                                        </div>
+                                        <div class="col-auto">
+                                            <img src="https://ui-avatars.com/api/?name=Lê+Văn+C&background=06d6a0&color=fff" alt="Avatar" class="candidate-avatar">
+                                        </div>
+                                        <div class="col">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <div>
+                                                    <h5 class="fw-bold mb-1">Lê Văn C</h5>
+                                                    <p class="text-muted mb-1">Intern - ĐH Khoa học Tự nhiên</p>
+                                                    <div class="d-flex gap-2 align-items-center flex-wrap">
+                                                        <span class="badge bg-light text-dark">
+                                                            <i class="bi bi-envelope me-1"></i>levanc@email.com
+                                                        </span>
+                                                        <span class="badge bg-light text-dark">
+                                                            <i class="bi bi-telephone me-1"></i>0912 345 678
+                                                        </span>
+                                                        <span class="badge bg-primary bg-opacity-10 text-primary">
+                                                            <i class="bi bi-file-text me-1"></i>Đã gửi CV
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="text-end">
+                                                    <div class="compatibility-badge compatibility-low mb-2 mx-auto">45%</div>
+                                                    <span class="status-badge bg-success bg-opacity-25 text-success">Mời PV</span>
+                                                </div>
+                                            </div>
+                                            <div class="mt-3 d-flex justify-content-between align-items-center">
+                                                <div>
+                                                    <span class="text-muted">Ứng tuyển: 3 ngày trước</span>
+                                                    <span class="badge bg-warning bg-opacity-25 text-warning ms-2">
+                                                        <i class="bi bi-clock me-1"></i>PV: 15/12/2024
+                                                    </span>
+                                                </div>
+                                                <div class="d-flex gap-2">
+                                                    <button class="btn btn-outline-primary btn-sm" onclick="viewCandidate(3)">
+                                                        <i class="bi bi-eye me-1"></i>Xem CV
+                                                    </button>
+                                                    <button class="btn btn-outline-info btn-sm" onclick="rescheduleInterview(3)">
+                                                        <i class="bi bi-calendar-plus me-1"></i>Đổi lịch
+                                                    </button>
+                                                    <div class="dropdown action-dropdown">
+                                                        <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                            Hành động
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            <li><a class="dropdown-item" href="#" onclick="markAsViewed(3)"><i class="bi bi-check2 me-2"></i>Đánh dấu đã xem</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="cancelInterview(3)"><i class="bi bi-x-circle me-2"></i>Hủy PV</a></li>
+                                                            <li><a class="dropdown-item" href="#" onclick="addNote(3)"><i class="bi bi-pencil me-2"></i>Thêm ghi chú</a></li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Pagination -->
+                            <nav aria-label="Candidate pagination" class="mt-4">
+                                <ul class="pagination justify-content-center">
+                                    <li class="page-item disabled">
+                                        <a class="page-link" href="#" tabindex="-1">Trước</a>
+                                    </li>
+                                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link" href="#">Tiếp</a>
+                                    </li>
+                                </ul>
+                            </nav>
+                        </div>
+
+                        <!-- Other tabs would have similar structure but filtered content -->
+                        <div class="tab-pane fade" id="new" role="tabpanel">
+                            <div class="empty-state">
+                                <i class="bi bi-person-x"></i>
+                                <h5>Không có ứng viên nào</h5>
+                                <p class="text-muted">Không tìm thấy ứng viên nào trong danh mục này.</p>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="viewed" role="tabpanel">
+                            <div class="empty-state">
+                                <i class="bi bi-person-check"></i>
+                                <h5>Không có ứng viên nào</h5>
+                                <p class="text-muted">Không tìm thấy ứng viên nào trong danh mục này.</p>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="interview" role="tabpanel">
+                            <div class="empty-state">
+                                <i class="bi bi-calendar-event"></i>
+                                <h5>Không có ứng viên nào</h5>
+                                <p class="text-muted">Không tìm thấy ứng viên nào trong danh mục này.</p>
+                            </div>
+                        </div>
+                        <div class="tab-pane fade" id="rejected" role="tabpanel">
+                            <div class="empty-state">
+                                <i class="bi bi-person-dash"></i>
+                                <h5>Không có ứng viên nào</h5>
+                                <p class="text-muted">Không tìm thấy ứng viên nào trong danh mục này.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <!-- Quick Actions -->
+                    <div class="sidebar-card">
+                        <div class="card-header">
+                            <h5 class="fw-bold mb-0">Hành động nhanh</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-primary" onclick="bulkAction('viewed')">
+                                    <i class="bi bi-check2-all me-2"></i>Đánh dấu đã xem hàng loạt
+                                </button>
+                                <button class="btn btn-outline-success" onclick="bulkAction('interview')">
+                                    <i class="bi bi-send me-2"></i>Mời phỏng vấn hàng loạt
+                                </button>
+                                <button class="btn btn-outline-danger" onclick="bulkAction('reject')">
+                                    <i class="bi bi-x-circle me-2"></i>Từ chối hàng loạt
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Candidate Notes -->
+                    <div class="sidebar-card">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="fw-bold mb-0">Ghi chú ứng viên</h5>
+                            <button class="btn btn-sm btn-outline-primary" onclick="addNewNote()">
+                                <i class="bi bi-plus"></i>
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div class="note-item">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="fw-bold">Nguyễn Văn A</span>
+                                    <small class="text-muted">2 giờ trước</small>
+                                </div>
+                                <p class="mb-1">Có kinh nghiệm ReactJS tốt, portfolio ấn tượng. Nên mời phỏng vấn kỹ thuật.</p>
+                                <div class="d-flex gap-1">
+                                    <span class="badge bg-primary bg-opacity-25 text-primary">Kỹ thuật</span>
+                                    <span class="badge bg-success bg-opacity-25 text-success">Tiềm năng</span>
+                                </div>
+                            </div>
+                            <div class="note-item">
+                                <div class="d-flex justify-content-between align-items-start mb-2">
+                                    <span class="fw-bold">Trần Thị B</span>
+                                    <small class="text-muted">1 ngày trước</small>
+                                </div>
+                                <p class="mb-1">Communication skills tốt, cần đánh giá thêm về technical depth.</p>
+                                <div class="d-flex gap-1">
+                                    <span class="badge bg-info bg-opacity-25 text-info">Giao tiếp</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interview Schedule -->
+                    <div class="sidebar-card">
+                        <div class="card-header">
+                            <h5 class="fw-bold mb-0">Lịch phỏng vấn sắp tới</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="interview-item">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <h6 class="fw-bold mb-0">Lê Văn C</h6>
+                                    <span class="badge bg-warning bg-opacity-25 text-warning">15/12</span>
+                                </div>
+                                <p class="text-muted mb-1">Frontend Developer Intern</p>
+                                <small class="text-muted">10:00 AM - Phòng 301</small>
+                            </div>
+                            <div class="interview-item">
+                                <div class="d-flex justify-content-between align-items-start mb-1">
+                                    <h6 class="fw-bold mb-0">Phạm Thị D</h6>
+                                    <span class="badge bg-warning bg-opacity-25 text-warning">16/12</span>
+                                </div>
+                                <p class="text-muted mb-1">Frontend Developer Intern</p>
+                                <small class="text-muted">2:00 PM - Phòng 302</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="py-5 mt-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-lg-4">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="logo-icon me-2">
+                            <i class="bi bi-briefcase"></i>
+                        </div>
+                        <span class="fw-bold fs-5">JobHub</span>
+                    </div>
+                    <p class="mb-3 footer-links">Kết nối tài năng với cơ hội. Tìm kiếm công việc mơ ước và ứng viên tiềm năng.</p>
+                    <div class="d-flex gap-3">
+                        <a href="#" class="footer-links"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="footer-links"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="footer-links"><i class="bi bi-twitter"></i></a>
+                    </div>
+                </div>
+                <div class="col-lg-2">
+                    <h6 class="fw-bold mb-3">Ứng viên</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li class="mb-2"><a href="#">Tìm việc làm</a></li>
+                        <li class="mb-2"><a href="#">Tạo hồ sơ</a></li>
+                        <li class="mb-2"><a href="#">Ứng tuyển</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2">
+                    <h6 class="fw-bold mb-3">Nhà tuyển dụng</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li class="mb-2"><a href="#">Đăng tin tuyển dụng</a></li>
+                        <li class="mb-2"><a href="#">Tìm ứng viên</a></li>
+                        <li class="mb-2"><a href="#">Gói dịch vụ</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2">
+                    <h6 class="fw-bold mb-3">Về JobHub</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li class="mb-2"><a href="#">Giới thiệu</a></li>
+                        <li class="mb-2"><a href="#">Điều khoản</a></li>
+                        <li class="mb-2"><a href="#">Bảo mật</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-2">
+                    <h6 class="fw-bold mb-3">Hỗ trợ</h6>
+                    <ul class="list-unstyled footer-links">
+                        <li class="mb-2"><a href="#">Trung tâm trợ giúp</a></li>
+                        <li class="mb-2"><a href="#">Liên hệ</a></li>
+                        <li class="mb-2"><a href="#">FAQ</a></li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4" style="border-color: rgba(255,255,255,0.1);">
+            <div class="text-center footer-links">
+                <p class="mb-0">&copy; 2024 JobHub. Tất cả các quyền được bảo lưu.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script>
+        // JavaScript functions for candidate management
+        function changeJob(jobId) {
+            console.log('Changing to job:', jobId);
+            // In a real app, this would fetch candidates for the selected job
+            showNotification(`Đã chuyển sang tin tuyển dụng #${jobId}`, 'info');
+        }
+
+        function exportCandidates() {
+            console.log('Exporting candidates...');
+            // In a real app, this would generate and download a CSV/Excel file
+            showNotification('Đang xuất danh sách ứng viên...', 'info');
+            setTimeout(() => {
+                showNotification('Xuất danh sách ứng viên thành công!', 'success');
+            }, 1500);
+        }
+
+        function bulkInvite() {
+            const selectedCandidates = getSelectedCandidates();
+            if (selectedCandidates.length === 0) {
+                showNotification('Vui lòng chọn ít nhất một ứng viên!', 'warning');
+                return;
+            }
+            
+            console.log('Bulk inviting candidates:', selectedCandidates);
+            showNotification(`Đã gửi lời mời phỏng vấn đến ${selectedCandidates.length} ứng viên`, 'success');
+        }
+
+        function viewCandidate(candidateId) {
+            console.log('Viewing candidate:', candidateId);
+            // In a real app, this would open a modal or navigate to candidate details
+            showNotification(`Đang mở hồ sơ ứng viên #${candidateId}`, 'info');
+        }
+
+        function markAsViewed(candidateId) {
+            console.log('Marking candidate as viewed:', candidateId);
+            // In a real app, this would update the candidate status via API
+            showNotification(`Đã đánh dấu ứng viên #${candidateId} là đã xem`, 'success');
+            
+            // Update UI
+            const statusBadge = document.querySelector(`[onclick="markAsViewed(${candidateId})"]`).closest('.candidate-card').querySelector('.status-badge');
+            statusBadge.className = 'status-badge bg-info bg-opacity-25 text-info';
+            statusBadge.textContent = 'Đã xem';
+        }
+
+        function inviteInterview(candidateId) {
+            console.log('Inviting candidate to interview:', candidateId);
+            // In a real app, this would open a modal to schedule interview
+            showNotification(`Đã gửi lời mời phỏng vấn đến ứng viên #${candidateId}`, 'success');
+            
+            // Update UI
+            const statusBadge = document.querySelector(`[onclick="inviteInterview(${candidateId})"]`).closest('.candidate-card').querySelector('.status-badge');
+            statusBadge.className = 'status-badge bg-success bg-opacity-25 text-success';
+            statusBadge.textContent = 'Mời PV';
+        }
+
+        function rejectCandidate(candidateId) {
+            console.log('Rejecting candidate:', candidateId);
+            // In a real app, this would update the candidate status via API
+            if (confirm('Bạn có chắc chắn muốn từ chối ứng viên này?')) {
+                showNotification(`Đã từ chối ứng viên #${candidateId}`, 'info');
+                
+                // Update UI
+                const statusBadge = document.querySelector(`[onclick="rejectCandidate(${candidateId})"]`).closest('.candidate-card').querySelector('.status-badge');
+                statusBadge.className = 'status-badge bg-danger bg-opacity-25 text-danger';
+                statusBadge.textContent = 'Từ chối';
+            }
+        }
+
+        function addNote(candidateId) {
+            console.log('Adding note for candidate:', candidateId);
+            // In a real app, this would open a modal to add note
+            const note = prompt('Nhập ghi chú cho ứng viên:');
+            if (note) {
+                showNotification('Đã thêm ghi chú cho ứng viên', 'success');
+            }
+        }
+
+        function markAsNew(candidateId) {
+            console.log('Marking candidate as new:', candidateId);
+            // In a real app, this would update the candidate status via API
+            showNotification(`Đã đánh dấu ứng viên #${candidateId} là chưa xem`, 'info');
+            
+            // Update UI
+            const statusBadge = document.querySelector(`[onclick="markAsNew(${candidateId})"]`).closest('.candidate-card').querySelector('.status-badge');
+            statusBadge.className = 'status-badge bg-warning bg-opacity-25 text-warning';
+            statusBadge.textContent = 'Chưa xem';
+        }
+
+        function rescheduleInterview(candidateId) {
+            console.log('Rescheduling interview for candidate:', candidateId);
+            // In a real app, this would open a modal to reschedule
+            showNotification(`Đang mở lịch để đổi lịch phỏng vấn cho ứng viên #${candidateId}`, 'info');
+        }
+
+        function cancelInterview(candidateId) {
+            console.log('Canceling interview for candidate:', candidateId);
+            // In a real app, this would update the candidate status via API
+            if (confirm('Bạn có chắc chắn muốn hủy lịch phỏng vấn?')) {
+                showNotification(`Đã hủy lịch phỏng vấn với ứng viên #${candidateId}`, 'info');
+                
+                // Update UI
+                const statusBadge = document.querySelector(`[onclick="cancelInterview(${candidateId})"]`).closest('.candidate-card').querySelector('.status-badge');
+                statusBadge.className = 'status-badge bg-info bg-opacity-25 text-info';
+                statusBadge.textContent = 'Đã xem';
+            }
+        }
+
+        function bulkAction(action) {
+            const selectedCandidates = getSelectedCandidates();
+            if (selectedCandidates.length === 0) {
+                showNotification('Vui lòng chọn ít nhất một ứng viên!', 'warning');
+                return;
+            }
+            
+            console.log('Performing bulk action:', action, 'on candidates:', selectedCandidates);
+            
+            let message = '';
+            switch(action) {
+                case 'viewed':
+                    message = `Đã đánh dấu ${selectedCandidates.length} ứng viên là đã xem`;
+                    break;
+                case 'interview':
+                    message = `Đã gửi lời mời phỏng vấn đến ${selectedCandidates.length} ứng viên`;
+                    break;
+                case 'reject':
+                    message = `Đã từ chối ${selectedCandidates.length} ứng viên`;
+                    break;
+            }
+            
+            showNotification(message, 'success');
+        }
+
+        function addNewNote() {
+            console.log('Adding new note...');
+            // In a real app, this would open a modal to add a general note
+            const note = prompt('Nhập ghi chú mới:');
+            if (note) {
+                showNotification('Đã thêm ghi chú mới', 'success');
+            }
+        }
+
+        function getSelectedCandidates() {
+            const checkboxes = document.querySelectorAll('.candidate-checkbox:checked');
+            return Array.from(checkboxes).map(checkbox => checkbox.getAttribute('data-id'));
+        }
+
+        function showNotification(message, type) {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            notification.style.cssText = 'top: 100px; right: 20px; z-index: 1050; min-width: 300px;';
+            notification.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            // Add to page
+            document.body.appendChild(notification);
+            
+            // Auto remove after 3 seconds
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 3000);
+        }
+
+        // Search functionality
+        document.getElementById('searchCandidates').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            console.log('Searching for:', searchTerm);
+            // In a real app, this would filter the candidate list
+        });
+
+        // Sort functionality
+        document.getElementById('sortCandidates').addEventListener('change', function(e) {
+            console.log('Sorting by:', e.target.value);
+            // In a real app, this would sort the candidate list
+        });
+
+        // Filter functionality
+        document.getElementById('filterCompatibility').addEventListener('change', function(e) {
+            console.log('Filtering by compatibility:', e.target.value);
+            // In a real app, this would filter the candidate list
+        });
+
+        // Select all functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add select all checkbox in a real implementation
+        });
+    </script>
+</body>
+</html>

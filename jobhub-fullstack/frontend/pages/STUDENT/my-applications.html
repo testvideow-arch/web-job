@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ Sơ Ứng Tuyển - JobHub</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .applications-container {
+            min-height: 100vh;
+            background: #f8f9fa;
+            padding-top: 80px;
+        }
+        .application-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s;
+        }
+        .application-card:hover {
+            transform: translateY(-2px);
+        }
+        .status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 500;
+        }
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+        }
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: #dee2e6;
+        }
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.25rem;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--primary-color);
+        }
+        .stats-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky-top bg-white shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="../index.html">
+                    <div class="logo-icon me-2">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <span class="fw-bold">JobHub</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="student-dashboard.html">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="job-search.html">Tìm việc</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="my-cvs.html">CV của tôi</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="my-applications.html">Ứng tuyển</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../blog.html">Blog</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-2 align-items-center">
+                        <a href="../shared/notifications.html" class="btn btn-outline-secondary btn-sm position-relative">
+                            <i class="bi bi-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
+                        </a>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1"></i>Đang tải...
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="student-profile.html">Hồ sơ</a></li>
+                                <li><a class="dropdown-item" href="../shared/settings.html">Cài đặt</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" onclick="handleLogout()">Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="applications-container">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="fw-bold mb-1">Hồ sơ ứng tuyển</h1>
+                            <p class="text-muted mb-0">Theo dõi tất cả đơn ứng tuyển của bạn</p>
+                        </div>
+                        <a href="job-search.html" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>Tìm việc mới
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h3 class="fw-bold text-primary" id="allApplicationsCount">0</h3>
+                        <p class="text-muted mb-0">Tổng ứng tuyển</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h3 class="fw-bold text-warning" id="pendingApplicationsCount">0</h3>
+                        <p class="text-muted mb-0">Đang chờ duyệt</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h3 class="fw-bold text-info" id="viewedApplicationsCount">0</h3>
+                        <p class="text-muted mb-0">Đã xem hồ sơ</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h3 class="fw-bold text-success" id="interviewApplicationsCount">0</h3>
+                        <p class="text-muted mb-0">Mời phỏng vấn</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Applications List -->
+                <div class="col-lg-8">
+                    <!-- Filter Tabs -->
+                    <ul class="nav nav-pills mb-4" id="applicationTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="all-tab" data-bs-toggle="pill" data-bs-target="#all" type="button">
+                                Tất cả
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="pending-tab" data-bs-toggle="pill" data-bs-target="#pending" type="button">
+                                Chờ duyệt
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="viewed-tab" data-bs-toggle="pill" data-bs-target="#viewed" type="button">
+                                Đã xem
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="interview-tab" data-bs-toggle="pill" data-bs-target="#interview" type="button">
+                                Phỏng vấn
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="rejected-tab" data-bs-toggle="pill" data-bs-target="#rejected" type="button">
+                                Từ chối
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content" id="applicationTabsContent">
+                        <!-- All Applications -->
+                        <div class="tab-pane fade show active" id="all" role="tabpanel">
+                            <!-- Application 1 - Interview -->
+                            <div class="application-card">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        <img src="../assets/company-logo.png" alt="Tech Corp" width="50" height="50" class="rounded">
+                                    </div>
+                                    <div class="col">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h5 class="fw-bold mb-1">Frontend Developer Intern</h5>
+                                                <p class="text-muted mb-2">Tech Corp Vietnam • Hồ Chí Minh</p>
+                                                <div class="d-flex gap-3 text-muted small">
+                                                    <span><i class="bi bi-calendar me-1"></i>Ứng tuyển: 15/12/2024</span>
+                                                    <span><i class="bi bi-file-text me-1"></i>CV: Frontend Developer</span>
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="status-badge bg-warning text-dark">Mời phỏng vấn</span>
+                                                <div class="mt-2">
+                                                    <small class="text-muted">Cập nhật: 2 giờ trước</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Timeline -->
+                                        <div class="timeline mt-3">
+                                            <div class="timeline-item">
+                                                <small class="text-muted">18/12/2024 14:30</small>
+                                                <p class="mb-1 fw-semibold">Được mời tham gia phỏng vấn</p>
+                                                <p class="text-muted small mb-0">Phỏng vấn trực tiếp tại văn phòng - 20/12/2024 10:00</p>
+                                            </div>
+                                            <div class="timeline-item">
+                                                <small class="text-muted">16/12/2024 09:15</small>
+                                                <p class="mb-1 fw-semibold">Nhà tuyển dụng đã xem hồ sơ</p>
+                                            </div>
+                                            <div class="timeline-item">
+                                                <small class="text-muted">15/12/2024 16:20</small>
+                                                <p class="mb-1 fw-semibold">Đã nộp hồ sơ ứng tuyển</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="mt-3">
+                                            <button class="btn btn-sm btn-outline-primary me-2" onclick="viewApplication(1)">
+                                                <i class="bi bi-eye me-1"></i>Chi tiết
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-success me-2" onclick="confirmInterview(1)">
+                                                <i class="bi bi-calendar-check me-1"></i>Xác nhận PV
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="withdrawApplication(1)">
+                                                <i class="bi bi-x-circle me-1"></i>Rút hồ sơ
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Application 2 - Viewed -->
+                            <div class="application-card">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        <img src="../assets/company-logo.png" alt="Startup Innovation" width="50" height="50" class="rounded">
+                                    </div>
+                                    <div class="col">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h5 class="fw-bold mb-1">ReactJS Developer (Remote)</h5>
+                                                <p class="text-muted mb-2">Startup Innovation • Remote</p>
+                                                <div class="d-flex gap-3 text-muted small">
+                                                    <span><i class="bi bi-calendar me-1"></i>Ứng tuyển: 14/12/2024</span>
+                                                    <span><i class="bi bi-file-text me-1"></i>CV: Frontend Developer</span>
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="status-badge bg-info text-white">Đã xem hồ sơ</span>
+                                                <div class="mt-2">
+                                                    <small class="text-muted">Cập nhật: 1 ngày trước</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <button class="btn btn-sm btn-outline-primary me-2" onclick="viewApplication(2)">
+                                        <i class="bi bi-eye me-1"></i>Chi tiết
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-secondary me-2" onclick="sendFollowUp(2)">
+                                        <i class="bi bi-envelope me-1"></i>Theo dõi
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="withdrawApplication(2)">
+                                        <i class="bi bi-x-circle me-1"></i>Rút hồ sơ
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Application 3 - Pending -->
+                            <div class="application-card">
+                                <div class="row align-items-center">
+                                    <div class="col-auto">
+                                        <img src="../assets/company-logo.png" alt="Design Studio" width="50" height="50" class="rounded">
+                                    </div>
+                                    <div class="col">
+                                        <div class="d-flex justify-content-between align-items-start">
+                                            <div>
+                                                <h5 class="fw-bold mb-1">UI/UX Designer Intern</h5>
+                                                <p class="text-muted mb-2">Creative Design Studio • Hà Nội</p>
+                                                <div class="d-flex gap-3 text-muted small">
+                                                    <span><i class="bi bi-calendar me-1"></i>Ứng tuyển: 12/12/2024</span>
+                                                    <span><i class="bi bi-file-text me-1"></i>CV: UI/UX Designer</span>
+                                                </div>
+                                            </div>
+                                            <div class="text-end">
+                                                <span class="status-badge bg-secondary text-white">Chờ duyệt</span>
+                                                <div class="mt-2">
+                                                    <small class="text-muted">Cập nhật: 3 ngày trước</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <button class="btn btn-sm btn-outline-primary me-2" onclick="viewApplication(3)">
+                                        <i class="bi bi-eye me-1"></i>Chi tiết
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="withdrawApplication(3)">
+                                        <i class="bi bi-x-circle me-1"></i>Rút hồ sơ
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>JobHub</h5>
+                    <p>Kết nối sinh viên với nhà tuyển dụng hàng đầu.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Liên kết</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Về chúng tôi</a></li>
+                        <li><a href="#" class="text-white">Điều khoản</a></li>
+                        <li><a href="#" class="text-white">Chính sách</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Liên hệ</h5>
+                    <p>Email: contact@jobhub.vn</p>
+                    <p>Điện thoại: 0123 456 789</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        // Kiểm tra đăng nhập và khởi tạo trang
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!AUTH.requireAuth()) return;
+            
+            const user = AUTH.getUser();
+            if (user) {
+                document.querySelector('.dropdown-toggle').innerHTML = 
+                    `<i class="bi bi-person-circle me-1"></i>${user.fullName}`;
+            }
+            
+            // Tải dữ liệu ứng tuyển
+            loadApplicationsData();
+        });
+
+        async function loadApplicationsData() {
+            try {
+                const userData = AUTH.getUser();
+                const applications = JSON.parse(localStorage.getItem(`jobhub_applications_${userData.id}`) || '[]');
+                
+                // Cập nhật thống kê
+                updateApplicationStats(applications);
+                
+                // Hiển thị danh sách ứng tuyển
+                displayApplications(applications);
+                
+            } catch (error) {
+                console.error('Lỗi tải dữ liệu ứng tuyển:', error);
+            }
+        }
+
+        function updateApplicationStats(applications) {
+            const total = applications.length;
+            const pending = applications.filter(app => app.status === 'pending').length;
+            const viewed = applications.filter(app => app.status === 'viewed').length;
+            const interview = applications.filter(app => app.status === 'interview').length;
+
+            document.getElementById('allApplicationsCount').textContent = total;
+            document.getElementById('pendingApplicationsCount').textContent = pending;
+            document.getElementById('viewedApplicationsCount').textContent = viewed;
+            document.getElementById('interviewApplicationsCount').textContent = interview;
+        }
+
+        function displayApplications(applications) {
+            // Logic để hiển thị danh sách ứng tuyển
+            // Bạn có thể thêm logic render ứng tuyển tại đây
+            console.log('Displaying applications:', applications);
+        }
+
+        // Các hàm xử lý ứng tuyển
+        function viewApplication(appId) {
+            alert('Xem chi tiết ứng tuyển: ' + appId);
+        }
+
+        function confirmInterview(appId) {
+            if (confirm('Xác nhận tham gia phỏng vấn?')) {
+                alert('Đã xác nhận tham gia phỏng vấn!');
+            }
+        }
+
+        function withdrawApplication(appId) {
+            if (confirm('Bạn có chắc muốn rút hồ sơ ứng tuyển?')) {
+                alert('Đã rút hồ sơ ứng tuyển!');
+            }
+        }
+
+        function sendFollowUp(appId) {
+            alert('Gửi email theo dõi ứng tuyển: ' + appId);
+        }
+
+        function handleLogout() {
+            AUTH.logout();
+        }
+    </script>
+</body>
+</html>

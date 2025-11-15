@@ -1,0 +1,393 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CV Của Tôi - JobHub</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .cv-container {
+            min-height: 100vh;
+            background: #f8f9fa;
+            padding-top: 80px;
+        }
+        .cv-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s;
+        }
+        .cv-card:hover {
+            transform: translateY(-2px);
+        }
+        .cv-preview {
+            background: #f8f9fa;
+            border-radius: 8px;
+            height: 200px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+        .stats-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky-top bg-white shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="../index.html">
+                    <div class="logo-icon me-2">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <span class="fw-bold">JobHub</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="student-dashboard.html">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="job-search.html">Tìm việc</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="my-cvs.html">CV của tôi</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="my-applications.html">Ứng tuyển</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../blog.html">Blog</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-2 align-items-center">
+                        <a href="../shared/notifications.html" class="btn btn-outline-secondary btn-sm position-relative">
+                            <i class="bi bi-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
+                        </a>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1"></i>Đang tải...
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="student-profile.html">Hồ sơ</a></li>
+                                <li><a class="dropdown-item" href="../shared/settings.html">Cài đặt</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" onclick="handleLogout()">Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="cv-container">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="fw-bold mb-1">CV của tôi</h1>
+                            <p class="text-muted mb-0">Quản lý và theo dõi tất cả CV của bạn</p>
+                        </div>
+                        <a href="cv-builder.html" class="btn btn-primary">
+                            <i class="bi bi-plus-circle me-2"></i>Tạo CV mới
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h3 class="fw-bold text-primary" id="totalCVs">0</h3>
+                        <p class="text-muted mb-0">Tổng số CV</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h3 class="fw-bold text-success" id="completedCVs">0</h3>
+                        <p class="text-muted mb-0">CV đã hoàn thành</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h3 class="fw-bold text-warning" id="draftCVs">0</h3>
+                        <p class="text-muted mb-0">CV bản nháp</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stats-card">
+                        <h3 class="fw-bold text-info" id="applicationCount">0</h3>
+                        <p class="text-muted mb-0">Lần ứng tuyển</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CV List -->
+            <div class="row">
+                <div class="col-12">
+                    <!-- Filter Tabs -->
+                    <ul class="nav nav-pills mb-4" id="cvTabs" role="tablist">
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link active" id="all-tab" data-bs-toggle="pill" data-bs-target="#all" type="button">
+                                Tất cả CV
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="completed-tab" data-bs-toggle="pill" data-bs-target="#completed" type="button">
+                                Đã hoàn thành
+                            </button>
+                        </li>
+                        <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="draft-tab" data-bs-toggle="pill" data-bs-target="#draft" type="button">
+                                Bản nháp
+                            </button>
+                        </li>
+                    </ul>
+
+                    <!-- Tab Content -->
+                    <div class="tab-content" id="cvTabsContent">
+                        <!-- All CVs -->
+                        <div class="tab-pane fade show active" id="all" role="tabpanel">
+                            <div class="row">
+                                <!-- CV 1 -->
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="cv-card">
+                                        <div class="cv-preview">
+                                            <div class="text-center">
+                                                <i class="bi bi-file-text display-4 text-primary"></i>
+                                                <p class="mt-2 mb-0">Modern Template</p>
+                                            </div>
+                                        </div>
+                                        <h6 class="fw-bold mb-2">CV Frontend Developer</h6>
+                                        <p class="text-muted small mb-2">Cập nhật: 18/12/2024</p>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <span class="badge bg-success">Đã hoàn thành</span>
+                                            <small class="text-muted">8 lần ứng tuyển</small>
+                                        </div>
+                                        <div class="btn-group w-100">
+                                            <button class="btn btn-outline-primary btn-sm" onclick="editCV(1)">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-outline-success btn-sm" onclick="downloadCV(1)">
+                                                <i class="bi bi-download"></i>
+                                            </button>
+                                            <button class="btn btn-outline-info btn-sm" onclick="previewCV(1)">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm" onclick="deleteCV(1)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- CV 2 -->
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="cv-card">
+                                        <div class="cv-preview">
+                                            <div class="text-center">
+                                                <i class="bi bi-briefcase display-4 text-success"></i>
+                                                <p class="mt-2 mb-0">Professional</p>
+                                            </div>
+                                        </div>
+                                        <h6 class="fw-bold mb-2">CV Fullstack Developer</h6>
+                                        <p class="text-muted small mb-2">Cập nhật: 15/12/2024</p>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <span class="badge bg-success">Đã hoàn thành</span>
+                                            <small class="text-muted">5 lần ứng tuyển</small>
+                                        </div>
+                                        <div class="btn-group w-100">
+                                            <button class="btn btn-outline-primary btn-sm" onclick="editCV(2)">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-outline-success btn-sm" onclick="downloadCV(2)">
+                                                <i class="bi bi-download"></i>
+                                            </button>
+                                            <button class="btn btn-outline-info btn-sm" onclick="previewCV(2)">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm" onclick="deleteCV(2)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- CV 3 (Draft) -->
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="cv-card">
+                                        <div class="cv-preview">
+                                            <div class="text-center">
+                                                <i class="bi bi-file-earmark display-4 text-warning"></i>
+                                                <p class="mt-2 mb-0">Creative</p>
+                                            </div>
+                                        </div>
+                                        <h6 class="fw-bold mb-2">CV UI/UX Designer</h6>
+                                        <p class="text-muted small mb-2">Cập nhật: 10/12/2024</p>
+                                        <div class="d-flex justify-content-between align-items-center mb-3">
+                                            <span class="badge bg-warning">Bản nháp</span>
+                                            <small class="text-muted">0 lần ứng tuyển</small>
+                                        </div>
+                                        <div class="btn-group w-100">
+                                            <button class="btn btn-outline-primary btn-sm" onclick="editCV(3)">
+                                                <i class="bi bi-pencil"></i>
+                                            </button>
+                                            <button class="btn btn-outline-success btn-sm" disabled onclick="downloadCV(3)">
+                                                <i class="bi bi-download"></i>
+                                            </button>
+                                            <button class="btn btn-outline-info btn-sm" onclick="previewCV(3)">
+                                                <i class="bi bi-eye"></i>
+                                            </button>
+                                            <button class="btn btn-outline-danger btn-sm" onclick="deleteCV(3)">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Completed CVs -->
+                        <div class="tab-pane fade" id="completed" role="tabpanel">
+                            <div class="row">
+                                <!-- Only completed CVs would show here -->
+                                <div class="col-12">
+                                    <p class="text-muted text-center py-4">Hiển thị CV đã hoàn thành</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Draft CVs -->
+                        <div class="tab-pane fade" id="draft" role="tabpanel">
+                            <div class="row">
+                                <!-- Only draft CVs would show here -->
+                                <div class="col-12">
+                                    <p class="text-muted text-center py-4">Hiển thị CV bản nháp</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>JobHub</h5>
+                    <p>Kết nối sinh viên với nhà tuyển dụng hàng đầu.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Liên kết</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Về chúng tôi</a></li>
+                        <li><a href="#" class="text-white">Điều khoản</a></li>
+                        <li><a href="#" class="text-white">Chính sách</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Liên hệ</h5>
+                    <p>Email: contact@jobhub.vn</p>
+                    <p>Điện thoại: 0123 456 789</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        // Kiểm tra đăng nhập và khởi tạo trang
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!AUTH.requireAuth()) return;
+            
+            const user = AUTH.getUser();
+            if (user) {
+                document.querySelector('.dropdown-toggle').innerHTML = 
+                    `<i class="bi bi-person-circle me-1"></i>${user.fullName}`;
+            }
+            
+            // Tải dữ liệu CV
+            loadCVsData();
+        });
+
+        async function loadCVsData() {
+            try {
+                const userData = AUTH.getUser();
+                const userProfile = JSON.parse(localStorage.getItem(`jobhub_student_profile_${userData.id}`) || '{}');
+                const applications = JSON.parse(localStorage.getItem(`jobhub_applications_${userData.id}`) || '[]');
+                
+                // Cập nhật thống kê
+                updateCVStats(userProfile, applications);
+                
+            } catch (error) {
+                console.error('Lỗi tải dữ liệu CV:', error);
+            }
+        }
+
+        function updateCVStats(profile, applications) {
+            const hasCV = !!profile.resumeUrl;
+            const totalApplications = applications.length;
+            
+            document.getElementById('totalCVs').textContent = hasCV ? '1' : '0';
+            document.getElementById('completedCVs').textContent = hasCV ? '1' : '0';
+            document.getElementById('draftCVs').textContent = hasCV ? '0' : '1';
+            document.getElementById('applicationCount').textContent = totalApplications;
+        }
+
+        // Các hàm xử lý CV
+        function editCV(cvId) {
+            window.location.href = 'cv-builder.html?cv=' + cvId;
+        }
+
+        function downloadCV(cvId) {
+            alert('Đang tải xuống CV ID: ' + cvId);
+        }
+
+        function previewCV(cvId) {
+            alert('Xem trước CV ID: ' + cvId);
+        }
+
+        function deleteCV(cvId) {
+            if (confirm('Bạn có chắc muốn xóa CV này?')) {
+                alert('Đã xóa CV ID: ' + cvId);
+            }
+        }
+
+        function handleLogout() {
+            AUTH.logout();
+        }
+    </script>
+</body>
+</html>

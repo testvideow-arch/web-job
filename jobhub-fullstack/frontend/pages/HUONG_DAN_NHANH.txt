@@ -1,0 +1,50 @@
+═══════════════════════════════════════════════════════════
+  HƯỚNG DẪN XEM GIAO DIỆN SINHVIENWORKS
+═══════════════════════════════════════════════════════════
+
+📦 THƯ MỤC NÀY CHỈ GỒM FRONTEND (GIAO DIỆN)
+   - Không cần backend
+   - Không cần database
+   - Chỉ cần mở bằng Live Server
+
+🚀 CÁCH XEM NHANH NHẤT:
+
+CÁCH 1: VS Code Live Server (Dễ nhất - Khuyến nghị)
+─────────────────────────────────────────────────────
+1. Mở folder này trong VS Code
+2. Cài extension "Live Server" (nếu chưa có)
+   - Vào Extensions (Ctrl+Shift+X)
+   - Tìm "Live Server" → Install
+3. Click chuột phải vào file index.html
+4. Chọn "Open with Live Server"
+5. Done! Trình duyệt tự động mở
+
+CÁCH 2: Dùng npm serve
+─────────────────────────────────────────────────────
+1. Mở Terminal/Command Prompt trong folder này
+2. Chạy lệnh:
+   npm install
+   npm start
+3. Truy cập: http://localhost:3000
+
+CÁCH 3: Dùng Python
+─────────────────────────────────────────────────────
+1. Mở Terminal trong folder này
+2. Chạy lệnh:
+   python -m http.server 8000
+3. Truy cập: http://localhost:8000
+
+⚠️ LƯU Ý:
+- KHÔNG mở trực tiếp file index.html bằng double-click
+  (có thể gặp lỗi với assets)
+- Phải chạy qua HTTP server (Live Server, serve, etc.)
+
+📁 NỘI DUNG:
+- index.html      → Trang chủ
+- assets/         → CSS, JS, hình ảnh
+- favicon.png     → Icon
+
+✅ HOÀN TẤT! Chỉ cần mở bằng Live Server là xem được ngay!
+
+═══════════════════════════════════════════════════════════
+

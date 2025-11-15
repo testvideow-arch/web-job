@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ Sơ Công Ty - JobHub</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .profile-container {
+            min-height: 100vh;
+            background: #f8f9fa;
+            padding-top: 80px;
+        }
+        .profile-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .profile-header {
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .logo-upload {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+        .logo-upload img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 12px;
+        }
+        .logo-upload .btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+        }
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        .stat-item {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky-top bg-white shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="../index.html">
+                    <div class="logo-icon me-2">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <span class="fw-bold">JobHub</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="employer-dashboard.html">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="post-job.html">Đăng tin</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="manage-jobs.html">Quản lý tin</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="job-candidates.html">Ứng viên</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="employer-profile.html">Hồ sơ</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-2 align-items-center">
+                        <a href="../shared/notifications.html" class="btn btn-outline-secondary btn-sm position-relative">
+                            <i class="bi bi-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">5</span>
+                        </a>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-building me-1"></i>Tech Corp
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item active" href="employer-profile.html">Hồ sơ công ty</a></li>
+                                <li><a class="dropdown-item" href="../shared/settings.html">Cài đặt</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="../index.html">Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="profile-container">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Profile Header -->
+                    <div class="profile-card">
+                        <div class="profile-header">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <div class="logo-upload">
+                                        <img src="../assets/company-logo.png" alt="Company Logo" id="logoPreview">
+                                        <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('logoInput').click()">
+                                            <i class="bi bi-camera"></i>
+                                        </button>
+                                        <input type="file" id="logoInput" accept="image/*" class="d-none" onchange="previewLogo(event)">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h2 class="fw-bold mb-1">Tech Corp Vietnam</h2>
+                                    <p class="text-muted mb-2">
+                                        <i class="bi bi-geo-alt me-1"></i>Quận 1, TP.HCM, Việt Nam
+                                    </p>
+                                    <div class="d-flex gap-2">
+                                        <span class="badge bg-primary">Công nghệ</span>
+                                        <span class="badge bg-success">Đang hoạt động</span>
+                                        <span class="badge bg-info">Premium</span>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <button class="btn btn-outline-primary" onclick="toggleEditMode()">
+                                        <i class="bi bi-pencil me-1"></i>Chỉnh sửa
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Company Stats -->
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="fw-bold text-primary fs-4">15</div>
+                                <div class="text-muted">Tin đang tuyển</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="fw-bold text-success fs-4">156</div>
+                                <div class="text-muted">Ứng viên</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="fw-bold text-warning fs-4">23</div>
+                                <div class="text-muted">Đang phỏng vấn</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="fw-bold text-info fs-4">89</div>
+                                <div class="text-muted">Ứng viên mới</div>
+                            </div>
+                        </div>
+
+                        <!-- Company Information -->
+                        <div class="mb-4">
+                            <h5 class="section-title">Thông tin công ty</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Tên công ty</label>
+                                    <input type="text" class="form-control" value="Tech Corp Vietnam" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Tên viết tắt</label>
+                                    <input type="text" class="form-control" value="Tech Corp" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Email công ty</label>
+                                    <input type="email" class="form-control" value="contact@techcorp.vn" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Số điện thoại</label>
+                                    <input type="tel" class="form-control" value="+84 28 1234 5678" readonly>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Địa chỉ</label>
+                                    <textarea class="form-control" rows="2" readonly>123 Nguyễn Huệ, Quận 1, TP.HCM, Việt Nam</textarea>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Website</label>
+                                    <input type="url" class="form-control" value="https://techcorp.vn" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Quy mô công ty</label>
+                                    <select class="form-select" disabled>
+                                        <option value="50-100">50-100 nhân viên</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Lĩnh vực hoạt động</label>
+                                    <select class="form-select" disabled>
+                                        <option value="it">Công nghệ thông tin</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Company Description -->
+                        <div class="mb-4">
+                            <h5 class="section-title">Giới thiệu công ty</h5>
+                            <textarea class="form-control" rows="6" readonly>Tech Corp Vietnam là công ty công nghệ hàng đầu chuyên cung cấp giải pháp phần mềm cho các doanh nghiệp trong và ngoài nước. Với hơn 5 năm kinh nghiệm, chúng tôi tự hào có đội ngũ kỹ sư tài năng và môi trường làm việc chuyên nghiệp.
+
+Chúng tôi chuyên phát triển các giải pháp:
+• Ứng dụng web và mobile
+• Hệ thống quản lý doanh nghiệp
+• Giải pháp đám mây và AI
+• Ứng dụng fintech và e-commerce
+
+Văn hóa công ty:
+• Môi trường làm việc trẻ trung, sáng tạo
+• Cơ hội phát triển nghề nghiệp không giới hạn
+• Chế độ đãi ngộ cạnh tranh
+• Đào tạo và nâng cao kỹ năng liên tục</textarea>
+                        </div>
+
+                        <!-- Contact Person -->
+                        <div class="mb-4">
+                            <h5 class="section-title">Người liên hệ</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Họ và tên</label>
+                                    <input type="text" class="form-control" value="Nguyễn Văn A" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Chức vụ</label>
+                                    <input type="text" class="form-control" value="HR Manager" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Email liên hệ</label>
+                                    <input type="email" class="form-control" value="hr@techcorp.vn" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Số điện thoại</label>
+                                    <input type="tel" class="form-control" value="+84 123 456 789" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Social Media -->
+                        <div class="mb-4">
+                            <h5 class="section-title">Mạng xã hội</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Facebook</label>
+                                    <input type="url" class="form-control" value="https://facebook.com/techcorpvn" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">LinkedIn</label>
+                                    <input type="url" class="form-control" value="https://linkedin.com/company/techcorp" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Save Button -->
+                        <div class="d-flex justify-content-end gap-2">
+                            <button class="btn btn-secondary" onclick="cancelEdit()">Hủy</button>
+                            <button class="btn btn-primary" onclick="saveProfile()">Lưu thay đổi</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <!-- Footer content same as previous pages -->
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let isEditMode = false;
+
+        function previewLogo(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const output = document.getElementById('logoPreview');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        function toggleEditMode() {
+            isEditMode = !isEditMode;
+            
+            const inputs = document.querySelectorAll('.profile-card input, .profile-card textarea, .profile-card select');
+            const button = event.target;
+            
+            inputs.forEach(input => {
+                input.readOnly = !isEditMode;
+                if (input.tagName === 'SELECT') {
+                    input.disabled = !isEditMode;
+                }
+            });
+            
+            if (isEditMode) {
+                button.innerHTML = '<i class="bi bi-check me-1"></i>Lưu thay đổi';
+                button.classList.remove('btn-outline-primary');
+                button.classList.add('btn-primary');
+            } else {
+                button.innerHTML = '<i class="bi bi-pencil me-1"></i>Chỉnh sửa';
+                button.classList.remove('btn-primary');
+                button.classList.add('btn-outline-primary');
+            }
+        }
+
+        function cancelEdit() {
+            if (confirm('Hủy bỏ các thay đổi?')) {
+                location.reload();
+            }
+        }
+
+        function saveProfile() {
+            // Collect form data
+            const formData = {
+                companyName: document.querySelector('input[value="Tech Corp Vietnam"]').value,
+                shortName: document.querySelector('input[value="Tech Corp"]').value,
+                email: document.querySelector('input[value="contact@techcorp.vn"]').value,
+                phone: document.querySelector('input[value="+84 28 1234 5678"]').value,
+                address: document.querySelector('textarea').value,
+                website: document.querySelector('input[value="https://techcorp.vn"]').value,
+                description: document.querySelector('textarea[rows="6"]').value,
+                contactName: document.querySelector('input[value="Nguyễn Văn A"]').value,
+                contactPosition: document.querySelector('input[value="HR Manager"]').value,
+                contactEmail: document.querySelector('input[value="hr@techcorp.vn"]').value,
+                contactPhone: document.querySelector('input[value="+84 123 456 789"]').value,
+                facebook: document.querySelector('input[value="https://facebook.com/techcorpvn"]').value,
+                linkedin: document.querySelector('input[value="https://linkedin.com/company/techcorp"]').value
+            };
+            
+            console.log('Saving profile:', formData);
+            
+            // Simulate API call
+            setTimeout(() => {
+                alert('Thông tin công ty đã được cập nhật thành công!');
+                toggleEditMode();
+            }, 1000);
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Employer profile page loaded');
+        });
+    </script>
+</body>
+</html>

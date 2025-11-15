@@ -1,0 +1,77 @@
+═══════════════════════════════════════════════════════════
+  DANH SÁCH FILES TRONG THƯ MỤC FRONTEND-ONLY
+═══════════════════════════════════════════════════════════
+
+📁 CẤU TRÚC THƯ MỤC:
+
+frontend-only/
+│
+├── 📄 index.html                    ← TRANG CHỦ (HTML thuần)
+├── 📄 login.html                    ← TRANG ĐĂNG NHẬP
+├── 📄 register.html                 ← TRANG ĐĂNG KÝ
+│
+├── 📁 css/                           ← CSS tùy chỉnh
+│   └── style.css                    ← File CSS chính
+│
+├── 📁 js/                            ← JavaScript
+│   ├── script.js                    ← JavaScript cho trang chủ
+│   └── auth.js                      ← JavaScript cho đăng nhập/đăng ký
+│
+├── 📁 assets/                        ← Hình ảnh
+│   ├── Students_collaborating_on_campus_9760dec1-BNQb34qt.png
+│   ├── Student_job_interview_success_1bbbe4ab-CGEG4isa.png
+│   ├── Career_fair_networking_event_a36a70f1-NJ2r_s4t.png
+│   └── Professional_office_team_environment_a3b7ecb9-CFEj1VoR.png
+│
+├── 🖼️ favicon.png                    ← Icon trang web
+│
+└── 📝 README.md                      ← Hướng dẫn chi tiết
+
+═══════════════════════════════════════════════════════════
+
+✅ CÁC FILE QUAN TRỌNG:
+
+1. index.html
+   - Đây là file HTML chính (Trang chủ)
+   - HTML thuần + Bootstrap 5
+   - MỞ FILE NÀY BẰNG LIVE SERVER!
+
+2. login.html
+   - Trang đăng nhập
+   - HTML thuần + Bootstrap 5
+
+3. register.html
+   - Trang đăng ký
+   - HTML thuần + Bootstrap 5
+
+4. css/style.css
+   - File CSS chứa tất cả styles
+   - Dễ đọc, dễ sửa
+
+5. js/script.js
+   - JavaScript cho trang chủ
+   - Chứa data và logic
+
+6. js/auth.js
+   - JavaScript cho đăng nhập/đăng ký
+   - Validation, toggle password, etc.
+
+═══════════════════════════════════════════════════════════
+
+🚀 BẮT ĐẦU:
+
+1. Mở folder "frontend-only" trong VS Code
+2. Click chuột phải vào "index.html"
+3. Chọn "Open with Live Server"
+4. Trình duyệt sẽ tự động mở!
+
+═══════════════════════════════════════════════════════════
+
+💡 LƯU Ý:
+
+- ✅ KHÔNG CÓ REACT - Chỉ có HTML thuần + Bootstrap 5 + JavaScript
+- ✅ Dễ đọc và chỉnh sửa
+- ✅ Chỉ cần Live Server để xem
+- ✅ Không cần build, không cần npm install
+
+═══════════════════════════════════════════════════════════

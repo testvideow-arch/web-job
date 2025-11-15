@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ứng Tuyển - JobHub</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .application-container {
+            min-height: 100vh;
+            background: #f8f9fa;
+            padding-top: 80px;
+        }
+        .application-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .job-preview {
+            background: #f8f9ff;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .cv-option {
+            border: 2px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        .cv-option:hover {
+            border-color: var(--primary-color);
+            background: #f8f9ff;
+        }
+        .cv-option.selected {
+            border-color: var(--primary-color);
+            background: #e7f1ff;
+        }
+        .preview-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+            position: sticky;
+            top: 100px;
+        }
+        .loading-spinner {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky-top bg-white shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="../index.html">
+                    <div class="logo-icon me-2">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <span class="fw-bold">JobHub</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="student-dashboard.html">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="job-search.html">Tìm việc</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="my-cvs.html">CV của tôi</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="my-applications.html">Ứng tuyển</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../blog.html">Blog</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-2 align-items-center">
+                        <a href="../shared/notifications.html" class="btn btn-outline-secondary btn-sm position-relative">
+                            <i class="bi bi-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                        </a>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1"></i>Đang tải...
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="student-profile.html">Hồ sơ</a></li>
+                                <li><a class="dropdown-item" href="../shared/settings.html">Cài đặt</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" onclick="handleLogout()">Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Loading Spinner -->
+    <div class="text-center loading-spinner" id="loadingSpinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Đang tải...</span>
+        </div>
+        <p class="mt-2">Đang tải trang ứng tuyển...</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="application-container" id="applicationContent" style="display: none;">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="fw-bold mb-1">Ứng tuyển</h1>
+                            <p class="text-muted mb-0">Hoàn thành hồ sơ ứng tuyển của bạn</p>
+                        </div>
+                        <div>
+                            <a href="job-detail.html?id=1" class="btn btn-outline-secondary me-2">
+                                <i class="bi bi-arrow-left me-1"></i>Quay lại
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Application Form -->
+                <div class="col-lg-8">
+                    <form id="applicationForm" onsubmit="submitApplication(event)">
+                        <!-- Job Preview -->
+                        <div class="job-preview">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <img src="../assets/company-logo.png" alt="Tech Corp" width="60" height="60" class="rounded">
+                                </div>
+                                <div class="col">
+                                    <h4 class="fw-bold mb-1" id="jobTitle">Frontend Developer Intern</h4>
+                                    <p class="text-muted mb-2" id="companyInfo">Tech Corp Vietnam • Hồ Chí Minh</p>
+                                    <div class="d-flex flex-wrap gap-2" id="jobTags">
+                                        <span class="badge bg-light text-dark">Toàn thời gian</span>
+                                        <span class="badge bg-light text-dark">8-12 triệu</span>
+                                        <span class="badge bg-light text-dark">Hạn nộp: 25/12/2024</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- CV Selection -->
+                        <div class="application-card">
+                            <h3 class="fw-bold mb-4">Chọn CV để ứng tuyển</h3>
+                            
+                            <div class="mb-4" id="cvOptionsContainer">
+                                <!-- CV options will be loaded dynamically -->
+                                <div class="text-center text-muted py-4">
+                                    <i class="bi bi-file-earmark-text display-4"></i>
+                                    <p class="mt-2">Chưa có CV nào</p>
+                                    <a href="cv-builder.html" class="btn btn-primary">Tạo CV đầu tiên</a>
+                                </div>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                <a href="my-cvs.html" class="btn btn-outline-primary">
+                                    <i class="bi bi-folder me-1"></i>Quản lý CV
+                                </a>
+                                <a href="cv-builder.html" class="btn btn-outline-success">
+                                    <i class="bi bi-plus-circle me-1"></i>Tạo CV mới
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Cover Letter -->
+                        <div class="application-card">
+                            <h3 class="fw-bold mb-4">Thư giới thiệu (Tùy chọn)</h3>
+                            
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Tiêu đề thư</label>
+                                <input type="text" class="form-control" id="coverLetterTitle" placeholder="Ví dụ: Ứng tuyển vị trí Frontend Developer Intern">
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Nội dung thư</label>
+                                <textarea class="form-control" rows="8" placeholder="Viết thư giới thiệu để gây ấn tượng với nhà tuyển dụng..." id="coverLetter"></textarea>
+                                <div class="form-text">Đề xuất: 200-500 từ. Thư giới thiệu tốt sẽ tăng cơ hội được mời phỏng vấn.</div>
+                            </div>
+
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="saveCoverLetter">
+                                <label class="form-check-label" for="saveCoverLetter">
+                                    Lưu thư giới thiệu này làm mẫu
+                                </label>
+                            </div>
+                        </div>
+
+                        <!-- Additional Questions -->
+                        <div class="application-card">
+                            <h3 class="fw-bold mb-4">Câu hỏi bổ sung</h3>
+                            
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Bạn biết đến tin tuyển dụng này từ đâu? <span class="text-danger">*</span></label>
+                                <select class="form-select" id="source" required>
+                                    <option value="">Chọn nguồn</option>
+                                    <option value="jobhub">JobHub</option>
+                                    <option value="facebook">Facebook</option>
+                                    <option value="linkedin">LinkedIn</option>
+                                    <option value="friend">Bạn bè giới thiệu</option>
+                                    <option value="other">Khác</option>
+                                </select>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Mức lương mong muốn (triệu VND/tháng) <span class="text-danger">*</span></label>
+                                <input type="number" class="form-control" id="expectedSalary" placeholder="Ví dụ: 10" required>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label fw-semibold">Bạn có thể bắt đầu làm việc từ khi nào? <span class="text-danger">*</span></label>
+                                <input type="date" class="form-control" id="startDate" required>
+                            </div>
+                        </div>
+
+                        <!-- Submit Section -->
+                        <div class="application-card">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h5 class="fw-bold mb-1">Hoàn tất ứng tuyển</h5>
+                                    <p class="text-muted mb-0">Kiểm tra kỹ thông tin trước khi gửi</p>
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-outline-secondary" onclick="previewApplication()">
+                                        <i class="bi bi-eye me-1"></i>Xem trước
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-send me-1"></i>Gửi hồ sơ
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Preview Sidebar -->
+                <div class="col-lg-4">
+                    <div class="preview-section">
+                        <h4 class="fw-bold mb-4">Xem trước hồ sơ</h4>
+                        
+                        <!-- Application Summary -->
+                        <div class="mb-4">
+                            <h6 class="fw-semibold mb-3">Tóm tắt ứng tuyển</h6>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Vị trí:</span>
+                                <span class="fw-semibold" id="previewJobTitle">Frontend Developer Intern</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Công ty:</span>
+                                <span class="fw-semibold" id="previewCompany">Tech Corp Vietnam</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">CV sử dụng:</span>
+                                <span class="fw-semibold" id="previewCV">Chưa chọn</span>
+                            </div>
+                            <div class="d-flex justify-content-between">
+                                <span class="text-muted">Độ phù hợp:</span>
+                                <span class="badge bg-success" id="compatibilityScore">0%</span>
+                            </div>
+                        </div>
+
+                        <!-- Tips -->
+                        <div class="alert alert-info">
+                            <h6 class="fw-semibold mb-2"><i class="bi bi-lightbulb me-2"></i>Mẹo ứng tuyển</h6>
+                            <ul class="small mb-0 ps-3">
+                                <li>Kiểm tra kỹ thông tin CV trước khi gửi</li>
+                                <li>Thư giới thiệu nên ngắn gọn, tập trung vào điểm mạnh</li>
+                                <li>Trả lời đầy đủ các câu hỏi bổ sung</li>
+                                <li>Theo dõi email để cập nhật trạng thái ứng tuyển</li>
+                            </ul>
+                        </div>
+
+                        <!-- Application Stats -->
+                        <div class="mt-4">
+                            <h6 class="fw-semibold mb-3">Thống kê ứng tuyển của bạn</h6>
+                            <div class="row text-center">
+                                <div class="col-4">
+                                    <div class="fw-bold text-primary" id="totalApplications">0</div>
+                                    <small class="text-muted">Đã ứng tuyển</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="fw-bold text-warning" id="pendingApplications">0</div>
+                                    <small class="text-muted">Đang chờ</small>
+                                </div>
+                                <div class="col-4">
+                                    <div class="fw-bold text-success" id="interviewApplications">0</div>
+                                    <small class="text-muted">Mời PV</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>JobHub</h5>
+                    <p>Kết nối sinh viên với nhà tuyển dụng hàng đầu.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Liên kết</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Về chúng tôi</a></li>
+                        <li><a href="#" class="text-white">Điều khoản</a></li>
+                        <li><a href="#" class="text-white">Chính sách</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Liên hệ</h5>
+                    <p>Email: contact@jobhub.vn</p>
+                    <p>Điện thoại: 0123 456 789</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        let selectedCV = null;
+        let userData = null;
+
+        // Khởi tạo trang
+        document.addEventListener('DOMContentLoaded', function() {
+            // Kiểm tra đăng nhập
+            if (!AUTH.requireAuth()) return;
+            
+            userData = AUTH.getUser();
+            if (userData) {
+                document.querySelector('.dropdown-toggle').innerHTML = 
+                    `<i class="bi bi-person-circle me-1"></i>${userData.fullName}`;
+            }
+            
+            // Tải dữ liệu ứng tuyển
+            loadApplicationData();
+        });
+
+        // Tải dữ liệu ứng tuyển
+        async function loadApplicationData() {
+            showLoading();
+            
+            try {
+                // Lấy job ID từ URL
+                const jobId = getJobIdFromURL();
+                
+                // Tải thông tin công việc
+                await loadJobInfo(jobId);
+                
+                // Tải CV của user
+                await loadUserCVs();
+                
+                // Tải thống kê ứng tuyển
+                await loadApplicationStats();
+                
+                // Tính độ phù hợp
+                await calculateCompatibility();
+                
+                hideLoading();
+                
+            } catch (error) {
+                console.error('Lỗi tải dữ liệu ứng tuyển:', error);
+                hideLoading();
+                alert('Có lỗi xảy ra khi tải trang ứng tuyển');
+            }
+        }
+
+        // Lấy job ID từ URL
+        function getJobIdFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get('job') || '1';
+        }
+
+        // Tải thông tin công việc
+        async function loadJobInfo(jobId) {
+            // Trong thực tế, bạn sẽ gọi API để lấy thông tin job
+            // Ở đây dùng dữ liệu mẫu
+            const jobInfo = {
+                id: jobId,
+                title: "Frontend Developer Intern",
+                company: "Tech Corp Vietnam",
+                location: "Hồ Chí Minh",
+                type: "Toàn thời gian",
+                salary: "8-12 triệu",
+                deadline: "25/12/2024"
+            };
+
+            // Cập nhật UI
+            document.getElementById('jobTitle').textContent = jobInfo.title;
+            document.getElementById('companyInfo').textContent = `${jobInfo.company} • ${jobInfo.location}`;
+            document.getElementById('previewJobTitle').textContent = jobInfo.title;
+            document.getElementById('previewCompany').textContent = jobInfo.company;
+
+            // Cập nhật cover letter title mặc định
+            document.getElementById('coverLetterTitle').value = `Ứng tuyển vị trí ${jobInfo.title}`;
+        }
+
+        // Tải CV của user
+        async function loadUserCVs() {
+            const userCVs = JSON.parse(localStorage.getItem(`jobhub_cvs_${userData.id}`) || '[]');
+            const container = document.getElementById('cvOptionsContainer');
+            
+            if (userCVs.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center text-muted py-4">
+                        <i class="bi bi-file-earmark-text display-4"></i>
+                        <p class="mt-2">Chưa có CV nào</p>
+                        <a href="cv-builder.html" class="btn btn-primary">Tạo CV đầu tiên</a>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            userCVs.forEach((cv, index) => {
+                const isSelected = index === 0;
+                if (isSelected) selectedCV = cv.id;
+                
+                html += `
+                    <div class="cv-option ${isSelected ? 'selected' : ''}" onclick="selectCV('${cv.id}')">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="cvOption" value="${cv.id}" ${isSelected ? 'checked' : ''}>
+                            <label class="form-check-label fw-semibold">
+                                ${cv.title}
+                            </label>
+                        </div>
+                        <div class="d-flex justify-content-between text-muted small mt-2">
+                            <span>Cập nhật: ${new Date(cv.updatedAt).toLocaleDateString('vi-VN')}</span>
+                            <span>${getCVUsageCount(cv.id)} lần sử dụng</span>
+                            <span>${calculateCVCompatibility(cv)}% phù hợp</span>
+                        </div>
+                    </div>
+                `;
+            });
+
+            container.innerHTML = html;
+            updateCVPreview();
+        }
+
+        // Đếm số lần sử dụng CV
+        function getCVUsageCount(cvId) {
+            const applications = JSON.parse(localStorage.getItem(`jobhub_applications_${userData.id}`) || '[]');
+            return applications.filter(app => app.cvId === cvId).length;
+        }
+
+        // Tính độ phù hợp của CV
+        function calculateCVCompatibility(cv) {
+            // Logic tính toán đơn giản dựa trên skills và job requirements
+            let score = 50; // Điểm cơ bản
+            
+            if (cv.skills && cv.skills.includes('JavaScript')) score += 15;
+            if (cv.skills && cv.skills.includes('React')) score += 20;
+            if (cv.skills && cv.skills.length > 3) score += 10;
+            
+            return Math.min(score, 100);
+        }
+
+        // Chọn CV
+        function selectCV(cvId) {
+            selectedCV = cvId;
+            
+            // Update UI
+            document.querySelectorAll('.cv-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.currentTarget.classList.add('selected');
+            
+            // Update radio button
+            document.querySelector(`input[value="${cvId}"]`).checked = true;
+            
+            updateCVPreview();
+        }
+
+        // Cập nhật preview
+        function updateCVPreview() {
+            if (selectedCV) {
+                const userCVs = JSON.parse(localStorage.getItem(`jobhub_cvs_${userData.id}`) || '[]');
+                const selectedCVData = userCVs.find(cv => cv.id === selectedCV);
+                
+                if (selectedCVData) {
+                    document.getElementById('previewCV').textContent = selectedCVData.title;
+                    document.getElementById('compatibilityScore').textContent = 
+                        `${calculateCVCompatibility(selectedCVData)}%`;
+                }
+            }
+        }
+
+        // Tải thống kê ứng tuyển
+        async function loadApplicationStats() {
+            const applications = JSON.parse(localStorage.getItem(`jobhub_applications_${userData.id}`) || '[]');
+            
+            const total = applications.length;
+            const pending = applications.filter(app => app.status === 'pending').length;
+            const interviewing = applications.filter(app => app.status === 'reviewing' || app.status === 'interviewing').length;
+            
+            document.getElementById('totalApplications').textContent = total;
+            document.getElementById('pendingApplications').textContent = pending;
+            document.getElementById('interviewApplications').textContent = interviewing;
+        }
+
+        // Tính độ phù hợp tổng thể
+        async function calculateCompatibility() {
+            // Logic tính toán độ phù hợp dựa trên profile và job requirements
+            const userProfile = JSON.parse(localStorage.getItem(`jobhub_student_profile_${userData.id}`) || '{}');
+            
+            let score = 50; // Điểm cơ bản
+            
+            if (userProfile.skills && userProfile.skills.includes('JavaScript')) score += 15;
+            if (userProfile.skills && userProfile.skills.includes('React')) score += 20;
+            if (userProfile.experience && userProfile.experience > 0) score += 10;
+            
+            document.getElementById('compatibilityScore').textContent = `${Math.min(score, 100)}%`;
+        }
+
+        // Xem trước hồ sơ
+        function previewApplication() {
+            const coverLetter = document.getElementById('coverLetter').value;
+            if (!coverLetter.trim()) {
+                alert('Vui lòng nhập thư giới thiệu để xem trước');
+                return;
+            }
+            
+            // Mở cửa sổ xem trước
+            const previewWindow = window.open('', '_blank');
+            previewWindow.document.write(`
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <title>Xem trước hồ sơ ứng tuyển</title>
+                    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+                </head>
+                <body>
+                    <div class="container mt-4">
+                        <h3>Xem trước hồ sơ ứng tuyển</h3>
+                        <div class="mt-4">
+                            <h5>Thư giới thiệu:</h5>
+                            <div class="border p-3 bg-light">
+                                ${coverLetter.replace(/\n/g, '<br>')}
+                            </div>
+                        </div>
+                        <div class="mt-3">
+                            <button class="btn btn-primary" onclick="window.print()">In hồ sơ</button>
+                            <button class="btn btn-secondary" onclick="window.close()">Đóng</button>
+                        </div>
+                    </div>
+                </body>
+                </html>
+            `);
+        }
+
+        // Gửi hồ sơ ứng tuyển
+        function submitApplication(event) {
+            event.preventDefault();
+            
+            if (!selectedCV) {
+                alert('Vui lòng chọn CV để ứng tuyển');
+                return;
+            }
+
+            const formData = {
+                id: Date.now().toString(),
+                jobId: getJobIdFromURL(),
+                cvId: selectedCV,
+                coverLetterTitle: document.getElementById('coverLetterTitle').value,
+                coverLetter: document.getElementById('coverLetter').value,
+                source: document.getElementById('source').value,
+                expectedSalary: document.getElementById('expectedSalary').value,
+                startDate: document.getElementById('startDate').value,
+                status: 'pending',
+                appliedAt: new Date().toISOString(),
+                studentId: userData.id
+            };
+            
+            // Lưu ứng tuyển
+            const applications = JSON.parse(localStorage.getItem(`jobhub_applications_${userData.id}`) || '[]');
+            applications.push(formData);
+            localStorage.setItem(`jobhub_applications_${userData.id}`, JSON.stringify(applications));
+            
+            // Lưu thư giới thiệu nếu được chọn
+            if (document.getElementById('saveCoverLetter').checked) {
+                const coverLetterTemplates = JSON.parse(localStorage.getItem(`jobhub_cover_letters_${userData.id}`) || '[]');
+                coverLetterTemplates.push({
+                    id: Date.now().toString(),
+                    title: formData.coverLetterTitle,
+                    content: formData.coverLetter,
+                    createdAt: new Date().toISOString()
+                });
+                localStorage.setItem(`jobhub_cover_letters_${userData.id}`, JSON.stringify(coverLetterTemplates));
+            }
+            
+            console.log('Application submitted:', formData);
+            
+            // Hiển thị thông báo thành công
+            alert('🎉 Ứng tuyển thành công! Hồ sơ của bạn đã được gửi đến nhà tuyển dụng.');
+            window.location.href = 'my-applications.html';
+        }
+
+        // Đăng xuất
+        function handleLogout() {
+            AUTH.logout();
+        }
+
+        // Hiển thị loading
+        function showLoading() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('applicationContent').style.display = 'none';
+        }
+
+        // Ẩn loading
+        function hideLoading() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+            document.getElementById('applicationContent').style.display = 'block';
+        }
+
+        // Đặt ngày mặc định cho start date (2 tuần sau)
+        function setDefaultStartDate() {
+            const twoWeeksLater = new Date();
+            twoWeeksLater.setDate(twoWeeksLater.getDate() + 14);
+            document.getElementById('startDate').value = twoWeeksLater.toISOString().split('T')[0];
+        }
+
+        // Khởi tạo giá trị mặc định khi trang được tải
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(setDefaultStartDate, 1000);
+        });
+    </script>
+</body>
+</html>

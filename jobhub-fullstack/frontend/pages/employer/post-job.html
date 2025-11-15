@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng Tin Tuyển Dụng - JobHub</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .post-job-container {
+            min-height: 100vh;
+            background: #f8f9fa;
+            padding-top: 80px;
+        }
+        .form-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .preview-section {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+            position: sticky;
+            top: 100px;
+        }
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky-top bg-white shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="../index.html">
+                    <div class="logo-icon me-2">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <span class="fw-bold">JobHub</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="employer-dashboard.html">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="post-job.html">Đăng tin</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="manage-jobs.html">Quản lý tin</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="job-candidates.html">Ứng viên</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="employer-profile.html">Hồ sơ</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-2 align-items-center">
+                        <a href="../shared/notifications.html" class="btn btn-outline-secondary btn-sm position-relative">
+                            <i class="bi bi-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">5</span>
+                        </a>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-building me-1"></i>Tech Corp
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="employer-profile.html">Hồ sơ công ty</a></li>
+                                <li><a class="dropdown-item" href="../shared/settings.html">Cài đặt</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="../index.html">Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="post-job-container">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="fw-bold mb-1">Đăng tin tuyển dụng mới</h1>
+                            <p class="text-muted mb-0">Tạo tin tuyển dụng hấp dẫn để thu hút ứng viên tiềm năng</p>
+                        </div>
+                        <div>
+                            <button class="btn btn-outline-secondary me-2" onclick="saveDraft()">
+                                <i class="bi bi-file-earmark me-1"></i>Lưu nháp
+                            </button>
+                            <button class="btn btn-primary" onclick="previewJob()">
+                                <i class="bi bi-eye me-1"></i>Xem trước
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Form Section -->
+                <div class="col-lg-8">
+                    <form id="jobPostForm">
+                        <!-- Basic Information -->
+                        <div class="form-section">
+                            <h5 class="section-title">Thông tin cơ bản</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Chức danh công việc <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" placeholder="Ví dụ: Frontend Developer" required>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Ngành nghề <span class="text-danger">*</span></label>
+                                    <select class="form-select" required>
+                                        <option value="">Chọn ngành nghề</option>
+                                        <option value="it">Công nghệ thông tin</option>
+                                        <option value="design">Thiết kế</option>
+                                        <option value="marketing">Marketing</option>
+                                        <option value="sale">Kinh doanh</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Cấp bậc <span class="text-danger">*</span></label>
+                                    <select class="form-select" required>
+                                        <option value="">Chọn cấp bậc</option>
+                                        <option value="intern">Thực tập sinh</option>
+                                        <option value="fresher">Fresher</option>
+                                        <option value="junior">Junior</option>
+                                        <option value="middle">Middle</option>
+                                        <option value="senior">Senior</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Loại hình công việc <span class="text-danger">*</span></label>
+                                    <select class="form-select" required>
+                                        <option value="">Chọn loại hình</option>
+                                        <option value="fulltime">Toàn thời gian</option>
+                                        <option value="parttime">Bán thời gian</option>
+                                        <option value="internship">Thực tập</option>
+                                        <option value="remote">Làm việc từ xa</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Location & Salary -->
+                        <div class="form-section">
+                            <h5 class="section-title">Địa điểm & Lương</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Địa điểm làm việc <span class="text-danger">*</span></label>
+                                    <select class="form-select" required>
+                                        <option value="">Chọn địa điểm</option>
+                                        <option value="hcm">Hồ Chí Minh</option>
+                                        <option value="hanoi">Hà Nội</option>
+                                        <option value="danang">Đà Nẵng</option>
+                                        <option value="remote">Làm việc từ xa</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Địa chỉ chi tiết</label>
+                                    <input type="text" class="form-control" placeholder="Số nhà, đường, quận...">
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Mức lương</label>
+                                    <div class="input-group">
+                                        <input type="number" class="form-control" placeholder="Từ">
+                                        <span class="input-group-text">-</span>
+                                        <input type="number" class="form-control" placeholder="Đến">
+                                        <select class="form-select" style="max-width: 120px;">
+                                            <option value="vnd">VND</option>
+                                            <option value="usd">USD</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Hạn nộp hồ sơ</label>
+                                    <input type="date" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Job Description -->
+                        <div class="form-section">
+                            <h5 class="section-title">Mô tả công việc</h5>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Mô tả công việc <span class="text-danger">*</span></label>
+                                <textarea class="form-control" rows="5" placeholder="Mô tả chi tiết về công việc, trách nhiệm..." required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Yêu cầu công việc <span class="text-danger">*</span></label>
+                                <textarea class="form-control" rows="5" placeholder="Yêu cầu về kỹ năng, kinh nghiệm, bằng cấp..." required></textarea>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">Quyền lợi</label>
+                                <textarea class="form-control" rows="4" placeholder="Quyền lợi, phúc lợi dành cho ứng viên..."></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Requirements -->
+                        <div class="form-section">
+                            <h5 class="section-title">Yêu cầu chi tiết</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Kinh nghiệm</label>
+                                    <select class="form-select">
+                                        <option value="">Không yêu cầu</option>
+                                        <option value="intern">Thực tập sinh</option>
+                                        <option value="fresher">Dưới 1 năm</option>
+                                        <option value="1-3">1-3 năm</option>
+                                        <option value="3-5">3-5 năm</option>
+                                        <option value="5+">Trên 5 năm</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Bằng cấp</label>
+                                    <select class="form-select">
+                                        <option value="">Không yêu cầu</option>
+                                        <option value="highschool">THPT</option>
+                                        <option value="college">Cao đẳng</option>
+                                        <option value="university">Đại học</option>
+                                        <option value="master">Thạc sĩ</option>
+                                    </select>
+                                </div>
+                                <div class="col-12">
+                                    <label class="form-label fw-semibold">Kỹ năng yêu cầu</label>
+                                    <div class="d-flex flex-wrap gap-2 mb-2">
+                                        <span class="badge bg-primary">JavaScript <i class="bi bi-x ms-1" onclick="removeSkill(this)"></i></span>
+                                        <span class="badge bg-primary">ReactJS <i class="bi bi-x ms-1" onclick="removeSkill(this)"></i></span>
+                                    </div>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="skillInput" placeholder="Thêm kỹ năng">
+                                        <button class="btn btn-outline-primary" type="button" onclick="addSkill()">Thêm</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Contact Information -->
+                        <div class="form-section">
+                            <h5 class="section-title">Thông tin liên hệ</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Người liên hệ</label>
+                                    <input type="text" class="form-control" value="Nguyễn Văn A" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Chức vụ</label>
+                                    <input type="text" class="form-control" value="HR Manager" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Email</label>
+                                    <input type="email" class="form-control" value="hr@techcorp.com" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Số điện thoại</label>
+                                    <input type="tel" class="form-control" value="+84 123 456 789" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Submit Buttons -->
+                        <div class="form-section">
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-outline-secondary" onclick="saveDraft()">
+                                    <i class="bi bi-file-earmark me-2"></i>Lưu nháp
+                                </button>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="btn btn-outline-primary" onclick="previewJob()">
+                                        <i class="bi bi-eye me-2"></i>Xem trước
+                                    </button>
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-send me-2"></i>Gửi duyệt
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Preview Section -->
+                <div class="col-lg-4">
+                    <div class="preview-section">
+                        <h5 class="fw-bold mb-3">Xem trước tin tuyển dụng</h5>
+                        
+                        <div class="preview-content">
+                            <div class="mb-4">
+                                <h6 class="fw-bold text-primary mb-2">Frontend Developer</h6>
+                                <p class="text-muted mb-2">Tech Corp Vietnam</p>
+                                <div class="d-flex flex-wrap gap-1 mb-2">
+                                    <span class="badge bg-light text-dark">Hồ Chí Minh</span>
+                                    <span class="badge bg-light text-dark">Toàn thời gian</span>
+                                    <span class="badge bg-light text-dark">15-25 triệu</span>
+                                </div>
+                                <small class="text-muted">Đăng 0 phút trước</small>
+                            </div>
+
+                            <div class="mb-4">
+                                <h6 class="fw-semibold mb-2">Mô tả công việc:</h6>
+                                <p class="small text-muted">[Mô tả công việc sẽ hiển thị ở đây]</p>
+                            </div>
+
+                            <div class="mb-4">
+                                <h6 class="fw-semibold mb-2">Yêu cầu:</h6>
+                                <p class="small text-muted">[Yêu cầu công việc sẽ hiển thị ở đây]</p>
+                            </div>
+
+                            <div class="mb-4">
+                                <h6 class="fw-semibold mb-2">Quyền lợi:</h6>
+                                <p class="small text-muted">[Quyền lợi sẽ hiển thị ở đây]</p>
+                            </div>
+
+                            <div class="alert alert-info">
+                                <i class="bi bi-info-circle me-2"></i>
+                                <small>Tin tuyển dụng sẽ được gửi duyệt trước khi đăng lên hệ thống.</small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <!-- Footer content same as previous pages -->
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function addSkill() {
+            const skillInput = document.getElementById('skillInput');
+            const skill = skillInput.value.trim();
+            
+            if (skill) {
+                const skillsContainer = document.querySelector('.d-flex.flex-wrap.gap-2.mb-2');
+                const skillBadge = document.createElement('span');
+                skillBadge.className = 'badge bg-primary';
+                skillBadge.innerHTML = `${skill} <i class="bi bi-x ms-1" onclick="removeSkill(this)"></i>`;
+                skillsContainer.appendChild(skillBadge);
+                skillInput.value = '';
+            }
+        }
+
+        function removeSkill(element) {
+            element.parentElement.remove();
+        }
+
+        function saveDraft() {
+            alert('Đã lưu bản nháp!');
+            // Implement draft save logic
+        }
+
+        function previewJob() {
+            alert('Mở cửa sổ xem trước tin tuyển dụng');
+            // Implement preview logic
+        }
+
+        // Form submission
+        document.getElementById('jobPostForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            if (confirm('Bạn có chắc muốn gửi tin tuyển dụng này để duyệt?')) {
+                alert('Tin tuyển dụng đã được gửi duyệt thành công!');
+                // Implement submit logic
+            }
+        });
+    </script>
+</body>
+</html>

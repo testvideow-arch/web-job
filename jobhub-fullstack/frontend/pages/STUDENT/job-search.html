@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tìm Kiếm Việc Làm - JobHub</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .job-search-container {
+            min-height: 100vh;
+            background: #f8f9fa;
+            padding-top: 80px;
+        }
+        .search-header {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .filter-sidebar {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            position: sticky;
+            top: 100px;
+        }
+        .job-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            transition: transform 0.2s;
+        }
+        .job-card:hover {
+            transform: translateY(-2px);
+        }
+        .company-logo {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            border-radius: 8px;
+        }
+        .salary-badge {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky-top bg-white shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="../index.html">
+                    <div class="logo-icon me-2">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <span class="fw-bold">JobHub</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="student-dashboard.html">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="job-search.html">Tìm việc</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="my-cvs.html">CV của tôi</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="my-applications.html">Ứng tuyển</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../blog.html">Blog</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-2 align-items-center">
+                        <a href="../shared/notifications.html" class="btn btn-outline-secondary btn-sm position-relative">
+                            <i class="bi bi-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
+                        </a>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1"></i>Đang tải...
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="student-profile.html">Hồ sơ</a></li>
+                                <li><a class="dropdown-item" href="../shared/settings.html">Cài đặt</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" onclick="handleLogout()">Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="job-search-container">
+        <div class="container">
+            <!-- Search Header -->
+            <div class="search-header">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="fw-bold mb-2">Tìm kiếm việc làm</h1>
+                        <p class="text-muted mb-0">Khám phá hàng ngàn cơ hội nghề nghiệp phù hợp với bạn</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="text-muted">
+                            <span class="fw-semibold">1,234</span> việc làm được tìm thấy
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Search Form -->
+                <form class="mt-4" id="searchForm">
+                    <div class="row g-3">
+                        <div class="col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-search"></i></span>
+                                <input type="text" class="form-control" placeholder="Chức danh, kỹ năng, công ty..." id="keywordInput">
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="locationSelect">
+                                <option value="">Tất cả địa điểm</option>
+                                <option value="hcm">Hồ Chí Minh</option>
+                                <option value="hanoi">Hà Nội</option>
+                                <option value="danang">Đà Nẵng</option>
+                                <option value="remote">Làm việc từ xa</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <select class="form-select" id="categorySelect">
+                                <option value="">Tất cả ngành nghề</option>
+                                <option value="it">Công nghệ thông tin</option>
+                                <option value="design">Thiết kế</option>
+                                <option value="marketing">Marketing</option>
+                                <option value="business">Kinh doanh</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary w-100">
+                                <i class="bi bi-search me-2"></i>Tìm kiếm
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="row g-4">
+                <!-- Filter Sidebar -->
+                <div class="col-lg-3">
+                    <div class="filter-sidebar">
+                        <h5 class="fw-bold mb-3">Bộ lọc</h5>
+
+                        <!-- Job Type -->
+                        <div class="mb-4">
+                            <h6 class="fw-semibold mb-2">Loại hình công việc</h6>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="fulltime" checked>
+                                <label class="form-check-label" for="fulltime">Toàn thời gian</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="parttime">
+                                <label class="form-check-label" for="parttime">Bán thời gian</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="internship">
+                                <label class="form-check-label" for="internship">Thực tập</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="remote">
+                                <label class="form-check-label" for="remote">Làm việc từ xa</label>
+                            </div>
+                        </div>
+
+                        <!-- Experience Level -->
+                        <div class="mb-4">
+                            <h6 class="fw-semibold mb-2">Cấp bậc</h6>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="intern">
+                                <label class="form-check-label" for="intern">Thực tập sinh</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="fresher" checked>
+                                <label class="form-check-label" for="fresher">Fresher</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="junior">
+                                <label class="form-check-label" for="junior">Junior</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="middle">
+                                <label class="form-check-label" for="middle">Middle</label>
+                            </div>
+                        </div>
+
+                        <!-- Salary Range -->
+                        <div class="mb-4">
+                            <h6 class="fw-semibold mb-2">Mức lương (triệu VND)</h6>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="salary1">
+                                <label class="form-check-label" for="salary1">Dưới 5 triệu</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="salary2" checked>
+                                <label class="form-check-label" for="salary2">5 - 10 triệu</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="salary3">
+                                <label class="form-check-label" for="salary3">10 - 15 triệu</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="salary4">
+                                <label class="form-check-label" for="salary4">Trên 15 triệu</label>
+                            </div>
+                        </div>
+
+                        <!-- Company Size -->
+                        <div class="mb-4">
+                            <h6 class="fw-semibold mb-2">Quy mô công ty</h6>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="startup" checked>
+                                <label class="form-check-label" for="startup">Startup</label>
+                            </div>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" id="sme">
+                                <label class="form-check-label" for="sme">SME</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="enterprise">
+                                <label class="form-check-label" for="enterprise">Tập đoàn</label>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-primary" onclick="applyFilters()">
+                                Áp dụng bộ lọc
+                            </button>
+                            <button class="btn btn-outline-secondary" onclick="resetFilters()">
+                                Đặt lại
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job Results -->
+                <div class="col-lg-9">
+                    <!-- Sort Options -->
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <div class="d-flex align-items-center gap-3">
+                            <span class="text-muted">Sắp xếp theo:</span>
+                            <select class="form-select" style="width: auto;" onchange="sortJobs(this.value)">
+                                <option value="newest">Mới nhất</option>
+                                <option value="relevant">Liên quan nhất</option>
+                                <option value="salary">Lương cao nhất</option>
+                                <option value="deadline">Sắp hết hạn</option>
+                            </select>
+                        </div>
+                        <div class="text-muted">
+                            Hiển thị <span class="fw-semibold">1-10</span> của <span class="fw-semibold">1,234</span> kết quả
+                        </div>
+                    </div>
+
+                    <!-- Job List -->
+                    <div id="jobResults">
+                        <!-- Job 1 -->
+                        <div class="job-card">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <img src="../assets/company-logo.png" alt="Tech Corp" class="company-logo">
+                                </div>
+                                <div class="col">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h5 class="fw-bold mb-1">Frontend Developer Intern</h5>
+                                            <p class="text-muted mb-2">Tech Corp Vietnam • Hồ Chí Minh</p>
+                                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                                <span class="badge bg-light text-dark">Toàn thời gian</span>
+                                                <span class="badge bg-light text-dark">Fresher</span>
+                                                <span class="badge salary-badge">8-12 triệu</span>
+                                            </div>
+                                            <p class="text-muted small mb-0">Tuyển dụng ReactJS Developer có kinh nghiệm từ 6 tháng trở lên, làm việc với dự án fintech...</p>
+                                        </div>
+                                        <div class="text-end">
+                                            <small class="text-muted d-block">Đăng 2 giờ trước</small>
+                                            <small class="text-muted d-block">Hạn nộp: 25/12/2024</small>
+                                            <div class="mt-2">
+                                                <button class="btn btn-sm btn-outline-primary me-1" onclick="saveJob(1)">
+                                                    <i class="bi bi-bookmark"></i>
+                                                </button>
+                                                <a href="job-detail.html?id=1" class="btn btn-sm btn-primary">Xem chi tiết</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Job 2 -->
+                        <div class="job-card">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <img src="../assets/company-logo.png" alt="Startup Innovation" class="company-logo">
+                                </div>
+                                <div class="col">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h5 class="fw-bold mb-1">ReactJS Developer (Remote)</h5>
+                                            <p class="text-muted mb-2">Startup Innovation • Remote</p>
+                                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                                <span class="badge bg-light text-dark">Part-time</span>
+                                                <span class="badge bg-light text-dark">Junior</span>
+                                                <span class="badge salary-badge">10-15 triệu</span>
+                                            </div>
+                                            <p class="text-muted small mb-0">Tuyển dụng ReactJS Developer làm việc remote, có kinh nghiệm với TypeScript và Redux...</p>
+                                        </div>
+                                        <div class="text-end">
+                                            <small class="text-muted d-block">Đăng 5 giờ trước</small>
+                                            <small class="text-muted d-block">Hạn nộp: 30/12/2024</small>
+                                            <div class="mt-2">
+                                                <button class="btn btn-sm btn-outline-primary me-1" onclick="saveJob(2)">
+                                                    <i class="bi bi-bookmark"></i>
+                                                </button>
+                                                <a href="job-detail.html?id=2" class="btn btn-sm btn-primary">Xem chi tiết</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Job 3 -->
+                        <div class="job-card">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <img src="../assets/company-logo.png" alt="Design Studio" class="company-logo">
+                                </div>
+                                <div class="col">
+                                    <div class="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h5 class="fw-bold mb-1">UI/UX Designer Intern</h5>
+                                            <p class="text-muted mb-2">Creative Design Studio • Hà Nội</p>
+                                            <div class="d-flex flex-wrap gap-2 mb-2">
+                                                <span class="badge bg-light text-dark">Thực tập</span>
+                                                <span class="badge bg-light text-dark">Intern</span>
+                                                <span class="badge salary-badge">4-6 triệu</span>
+                                            </div>
+                                            <p class="text-muted small mb-0">Tuyển thực tập sinh UI/UX Designer, được training và mentorship từ senior designers...</p>
+                                        </div>
+                                        <div class="text-end">
+                                            <small class="text-muted d-block">Đăng 1 ngày trước</small>
+                                            <small class="text-muted d-block">Hạn nộp: 20/12/2024</small>
+                                            <div class="mt-2">
+                                                <button class="btn btn-sm btn-outline-primary me-1" onclick="saveJob(3)">
+                                                    <i class="bi bi-bookmark"></i>
+                                                </button>
+                                                <a href="job-detail.html?id=3" class="btn btn-sm btn-primary">Xem chi tiết</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Pagination -->
+                    <nav aria-label="Page navigation" class="mt-4">
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item disabled">
+                                <a class="page-link" href="#">Trước</a>
+                            </li>
+                            <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                            <li class="page-item"><a class="page-link" href="#">2</a></li>
+                            <li class="page-item"><a class="page-link" href="#">3</a></li>
+                            <li class="page-item">
+                                <a class="page-link" href="#">Tiếp</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>JobHub</h5>
+                    <p>Kết nối sinh viên với nhà tuyển dụng hàng đầu.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Liên kết</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Về chúng tôi</a></li>
+                        <li><a href="#" class="text-white">Điều khoản</a></li>
+                        <li><a href="#" class="text-white">Chính sách</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Liên hệ</h5>
+                    <p>Email: contact@jobhub.vn</p>
+                    <p>Điện thoại: 0123 456 789</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        // Kiểm tra đăng nhập và khởi tạo trang
+        document.addEventListener('DOMContentLoaded', function() {
+            if (!AUTH.requireAuth()) return;
+            
+            const user = AUTH.getUser();
+            if (user) {
+                document.querySelector('.dropdown-toggle').innerHTML = 
+                    `<i class="bi bi-person-circle me-1"></i>${user.fullName}`;
+            }
+            
+            // Tải dữ liệu tìm kiếm việc làm
+            loadJobSearchData();
+        });
+
+        async function loadJobSearchData() {
+            try {
+                const userData = AUTH.getUser();
+                const savedJobs = JSON.parse(localStorage.getItem(`jobhub_saved_jobs_${userData.id}`) || '[]');
+                
+                // Cập nhật số lượng việc làm đã lưu (nếu có hiển thị)
+                console.log('Saved jobs:', savedJobs.length);
+                
+            } catch (error) {
+                console.error('Lỗi tải dữ liệu tìm kiếm:', error);
+            }
+        }
+
+        // Search Form Handler
+        document.getElementById('searchForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const keyword = document.getElementById('keywordInput').value;
+            const location = document.getElementById('locationSelect').value;
+            const category = document.getElementById('categorySelect').value;
+            
+            console.log('Searching for:', { keyword, location, category });
+            // Implement search logic here
+        });
+
+        // Filter Functions
+        function applyFilters() {
+            const filters = {
+                jobTypes: getCheckedValues(['fulltime', 'parttime', 'internship', 'remote']),
+                experience: getCheckedValues(['intern', 'fresher', 'junior', 'middle']),
+                salary: getCheckedValues(['salary1', 'salary2', 'salary3', 'salary4']),
+                companySize: getCheckedValues(['startup', 'sme', 'enterprise'])
+            };
+            
+            console.log('Applied filters:', filters);
+            // Implement filter logic here
+        }
+
+        function resetFilters() {
+            document.querySelectorAll('.filter-sidebar input[type="checkbox"]').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            // Re-check default values
+            document.getElementById('fulltime').checked = true;
+            document.getElementById('fresher').checked = true;
+            document.getElementById('salary2').checked = true;
+            document.getElementById('startup').checked = true;
+            
+            console.log('Filters reset');
+        }
+
+        function getCheckedValues(ids) {
+            return ids.filter(id => document.getElementById(id).checked);
+        }
+
+        // Sort Function
+        function sortJobs(criteria) {
+            console.log('Sorting by:', criteria);
+            // Implement sort logic here
+        }
+
+        // Save Job Function
+        function saveJob(jobId) {
+            const user = AUTH.getUser();
+            if (!user) {
+                alert('Vui lòng đăng nhập để lưu việc làm');
+                return;
+            }
+
+            const button = event.currentTarget;
+            const savedJobs = JSON.parse(localStorage.getItem(`jobhub_saved_jobs_${user.id}`) || '[]');
+            
+            // Kiểm tra nếu đã lưu chưa
+            if (!savedJobs.includes(jobId)) {
+                savedJobs.push(jobId);
+                localStorage.setItem(`jobhub_saved_jobs_${user.id}`, JSON.stringify(savedJobs));
+                
+                button.innerHTML = '<i class="bi bi-bookmark-check"></i>';
+                button.classList.remove('btn-outline-primary');
+                button.classList.add('btn-success');
+                
+                alert('Đã lưu công việc vào danh sách yêu thích!');
+            } else {
+                alert('Công việc đã được lưu trước đó!');
+            }
+        }
+
+        function handleLogout() {
+            AUTH.logout();
+        }
+    </script>
+</body>
+</html>

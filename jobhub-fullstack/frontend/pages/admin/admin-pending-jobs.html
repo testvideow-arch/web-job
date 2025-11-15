@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Duyệt Tin Tuyển Dụng - JobHub Admin</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .admin-container {
+            min-height: 100vh;
+            background: #f8f9fa;
+            padding-top: 80px;
+        }
+        .pending-job-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+            border-left: 4px solid #ffc107;
+        }
+        .job-detail-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .filter-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header (giống admin-dashboard) -->
+    <header class="sticky-top bg-white shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="../index.html">
+                    <div class="logo-icon me-2">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <span class="fw-bold">JobHub</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin-dashboard.html">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="admin-pending-jobs.html">Duyệt tin</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin-users.html">Người dùng</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin-categories.html">Danh mục</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin-reports.html">Báo cáo</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-2 align-items-center">
+                        <a href="../shared/notifications.html" class="btn btn-outline-secondary btn-sm position-relative">
+                            <i class="bi bi-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">8</span>
+                        </a>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-shield-check me-1"></i>Admin
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="../shared/settings.html">Cài đặt</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="../index.html">Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="admin-container">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="fw-bold mb-1">Duyệt Tin Tuyển Dụng ⏳</h1>
+                            <p class="text-muted mb-0">Quản lý và phê duyệt tin tuyển dụng chờ xử lý</p>
+                        </div>
+                        <div class="text-end">
+                            <span class="badge bg-warning">8 tin chờ duyệt</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Section -->
+            <div class="filter-card">
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <label class="form-label">Lọc theo ngày</label>
+                        <select class="form-select">
+                            <option selected>Tất cả</option>
+                            <option>Hôm nay</option>
+                            <option>24h qua</option>
+                            <option>Tuần này</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Lọc theo danh mục</label>
+                        <select class="form-select">
+                            <option selected>Tất cả danh mục</option>
+                            <option>Công nghệ</option>
+                            <option>Design</option>
+                            <option>Kinh doanh</option>
+                        </select>
+                    </div>
+                    <div class="col-md-4">
+                        <label class="form-label">Lọc theo địa điểm</label>
+                        <select class="form-select">
+                            <option selected>Tất cả địa điểm</option>
+                            <option>Hà Nội</option>
+                            <option>Hồ Chí Minh</option>
+                            <option>Remote</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pending Jobs List -->
+            <div class="pending-job-card">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h4 class="fw-bold text-primary">Senior React Developer</h4>
+                        <p class="text-muted mb-2">
+                            <i class="bi bi-building me-1"></i>Tech Innovation JSC
+                            <span class="mx-2">•</span>
+                            <i class="bi bi-geo-alt me-1"></i>Hồ Chí Minh
+                            <span class="mx-2">•</span>
+                            <i class="bi bi-clock me-1"></i>Toàn thời gian
+                        </p>
+                        <div class="mb-3">
+                            <span class="badge bg-light text-dark">React</span>
+                            <span class="badge bg-light text-dark">JavaScript</span>
+                            <span class="badge bg-light text-dark">Node.js</span>
+                            <span class="badge bg-light text-dark">TypeScript</span>
+                        </div>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="mb-3">
+                            <small class="text-muted">Đăng lúc: 18/12/2024 12:30</small>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-success">
+                                <i class="bi bi-check-lg me-1"></i>Duyệt
+                            </button>
+                            <button class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#rejectModal">
+                                <i class="bi bi-x-lg me-1"></i>Từ chối
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Job Details -->
+                <div class="job-detail-section">
+                    <h6 class="fw-bold mb-3">Mô tả công việc:</h6>
+                    <p>Chúng tôi đang tìm kiếm Senior React Developer có kinh nghiệm để tham gia vào dự án phát triển sản phẩm mới. Bạn sẽ làm việc trong team năng động, sáng tạo với các công nghệ hiện đại.</p>
+                    
+                    <h6 class="fw-bold mb-3 mt-3">Yêu cầu:</h6>
+                    <ul>
+                        <li>3+ năm kinh nghiệm với React</li>
+                        <li>Thành thạo JavaScript/TypeScript</li>
+                        <li>Kinh nghiệm với Redux, React Query</li>
+                        <li>Hiểu biết về RESTful APIs</li>
+                    </ul>
+
+                    <h6 class="fw-bold mb-3 mt-3">Quyền lợi:</h6>
+                    <ul>
+                        <li>Lương thưởng cạnh tranh</li>
+                        <li>Bảo hiểm sức khỏe</li>
+                        <li>Đào tạo và phát triển</li>
+                    </ul>
+
+                    <div class="row mt-3">
+                        <div class="col-md-6">
+                            <small class="text-muted"><strong>Mức lương:</strong> $1500 - $2000</small>
+                        </div>
+                        <div class="col-md-6">
+                            <small class="text-muted"><strong>Hạn nộp:</strong> 31/12/2024</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- More pending jobs... -->
+            <div class="pending-job-card">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h4 class="fw-bold text-primary">UI/UX Designer Intern</h4>
+                        <p class="text-muted mb-2">
+                            <i class="bi bi-building me-1"></i>Creative Studio
+                            <span class="mx-2">•</span>
+                            <i class="bi bi-geo-alt me-1"></i>Remote
+                            <span class="mx-2">•</span>
+                            <i class="bi bi-clock me-1"></i>Thực tập
+                        </p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="mb-3">
+                            <small class="text-muted">Đăng lúc: 18/12/2024 09:15</small>
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn btn-success">
+                                <i class="bi bi-check-lg me-1"></i>Duyệt
+                            </button>
+                            <button class="btn btn-outline-danger">
+                                <i class="bi bi-x-lg me-1"></i>Từ chối
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination -->
+            <nav aria-label="Page navigation" class="mt-4">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Previous</a>
+                    </li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Reject Modal -->
+    <div class="modal fade" id="rejectModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Từ chối tin tuyển dụng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Lý do từ chối</label>
+                        <select class="form-select">
+                            <option selected>Chọn lý do...</option>
+                            <option>Thông tin không đầy đủ</option>
+                            <option>Nội dung vi phạm chính sách</option>
+                            <option>Thông tin công ty không xác thực</option>
+                            <option>Khác</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Ghi chú thêm</label>
+                        <textarea class="form-control" rows="3" placeholder="Nhập ghi chú chi tiết..."></textarea>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-danger">Xác nhận từ chối</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <!-- Footer content -->
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

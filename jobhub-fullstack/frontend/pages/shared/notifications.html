@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thông Báo - JobHub</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .notifications-container {
+            min-height: 100vh;
+            background: #f8f9fa;
+            padding-top: 80px;
+        }
+        .notification-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid transparent;
+            transition: all 0.3s;
+        }
+        .notification-card.unread {
+            border-left-color: var(--primary-color);
+            background: #f8f9ff;
+        }
+        .notification-card:hover {
+            transform: translateX(4px);
+        }
+        .notification-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+        }
+        .notification-icon.info {
+            background: #e7f1ff;
+            color: var(--primary-color);
+        }
+        .notification-icon.success {
+            background: #e8f5e8;
+            color: #198754;
+        }
+        .notification-icon.warning {
+            background: #fff3cd;
+            color: #ffc107;
+        }
+        .notification-icon.danger {
+            background: #f8d7da;
+            color: #dc3545;
+        }
+        .loading-spinner {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky-top bg-white shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="../index.html">
+                    <div class="logo-icon me-2">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <span class="fw-bold">JobHub</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="../student/student-dashboard.html">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../student/job-search.html">Tìm việc</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../student/my-cvs.html">CV của tôi</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="notifications.html">Thông báo</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-2 align-items-center">
+                        <a href="notifications.html" class="btn btn-outline-secondary btn-sm position-relative">
+                            <i class="bi bi-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificationBadge">0</span>
+                        </a>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1"></i>Đang tải...
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="../student/student-profile.html">Hồ sơ</a></li>
+                                <li><a class="dropdown-item" href="settings.html">Cài đặt</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" onclick="handleLogout()">Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Loading Spinner -->
+    <div class="text-center loading-spinner" id="loadingSpinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Đang tải...</span>
+        </div>
+        <p class="mt-2">Đang tải thông báo...</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="notifications-container" id="notificationsContent" style="display: none;">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="fw-bold mb-1">Thông báo</h1>
+                            <p class="text-muted mb-0">Cập nhật mới nhất từ hệ thống</p>
+                        </div>
+                        <div class="d-flex gap-2">
+                            <button class="btn btn-outline-primary" onclick="markAllAsRead()">
+                                <i class="bi bi-check-all me-1"></i>Đánh dấu đã đọc
+                            </button>
+                            <button class="btn btn-outline-danger" onclick="clearAllNotifications()">
+                                <i class="bi bi-trash me-1"></i>Xóa tất cả
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Filter Tabs -->
+            <ul class="nav nav-pills mb-4" id="notificationTabs" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="all-tab" data-bs-toggle="pill" data-bs-target="#all" type="button" onclick="filterNotifications('all')">
+                        Tất cả
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="unread-tab" data-bs-toggle="pill" data-bs-target="#unread" type="button" onclick="filterNotifications('unread')">
+                        Chưa đọc
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="job-tab" data-bs-toggle="pill" data-bs-target="#job" type="button" onclick="filterNotifications('job')">
+                        Việc làm
+                    </button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="system-tab" data-bs-toggle="pill" data-bs-target="#system" type="button" onclick="filterNotifications('system')">
+                        Hệ thống
+                    </button>
+                </li>
+            </ul>
+
+            <!-- Tab Content -->
+            <div class="tab-content" id="notificationTabsContent">
+                <!-- All Notifications -->
+                <div class="tab-pane fade show active" id="all" role="tabpanel">
+                    <div id="allNotifications">
+                        <!-- Notifications will be loaded here dynamically -->
+                    </div>
+                </div>
+
+                <!-- Unread Notifications -->
+                <div class="tab-pane fade" id="unread" role="tabpanel">
+                    <div id="unreadNotifications">
+                        <!-- Unread notifications will be loaded here dynamically -->
+                    </div>
+                </div>
+
+                <!-- Job Notifications -->
+                <div class="tab-pane fade" id="job" role="tabpanel">
+                    <div id="jobNotifications">
+                        <!-- Job notifications will be loaded here dynamically -->
+                    </div>
+                </div>
+
+                <!-- System Notifications -->
+                <div class="tab-pane fade" id="system" role="tabpanel">
+                    <div id="systemNotifications">
+                        <!-- System notifications will be loaded here dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Load More -->
+            <div class="text-center mt-4">
+                <button class="btn btn-outline-primary" onclick="loadMoreNotifications()">
+                    <i class="bi bi-arrow-clockwise me-2"></i>Tải thêm thông báo
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-4">
+                    <h5>JobHub</h5>
+                    <p>Kết nối sinh viên với nhà tuyển dụng hàng đầu.</p>
+                </div>
+                <div class="col-md-4">
+                    <h5>Liên kết</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="#" class="text-white">Về chúng tôi</a></li>
+                        <li><a href="#" class="text-white">Điều khoản</a></li>
+                        <li><a href="#" class="text-white">Chính sách</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-4">
+                    <h5>Liên hệ</h5>
+                    <p>Email: contact@jobhub.vn</p>
+                    <p>Điện thoại: 0123 456 789</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
+    <script>
+        let userData = null;
+        let allNotifications = [];
+        let currentFilter = 'all';
+
+        // Khởi tạo trang
+        document.addEventListener('DOMContentLoaded', function() {
+            // Kiểm tra đăng nhập
+            if (!AUTH.requireAuth()) return;
+            
+            userData = AUTH.getUser();
+            if (userData) {
+                document.querySelector('.dropdown-toggle').innerHTML = 
+                    `<i class="bi bi-person-circle me-1"></i>${userData.fullName}`;
+            }
+            
+            // Tải thông báo
+            loadNotifications();
+        });
+
+        // Tải thông báo
+        function loadNotifications() {
+            showLoading();
+            
+            try {
+                // Lấy thông báo từ localStorage
+                const notifications = JSON.parse(localStorage.getItem(`jobhub_notifications_${userData.id}`) || '[]');
+                
+                // Nếu chưa có thông báo, tạo dữ liệu mẫu
+                if (notifications.length === 0) {
+                    allNotifications = generateSampleNotifications();
+                    localStorage.setItem(`jobhub_notifications_${userData.id}`, JSON.stringify(allNotifications));
+                } else {
+                    allNotifications = notifications;
+                }
+                
+                // Hiển thị thông báo
+                displayNotifications();
+                updateNotificationBadge();
+                
+                hideLoading();
+                
+            } catch (error) {
+                console.error('Lỗi tải thông báo:', error);
+                hideLoading();
+                alert('Có lỗi xảy ra khi tải thông báo');
+            }
+        }
+
+        // Tạo thông báo mẫu
+        function generateSampleNotifications() {
+            const sampleNotifications = [
+                {
+                    id: '1',
+                    title: 'Ứng tuyển thành công!',
+                    message: 'Bạn đã ứng tuyển thành công vào vị trí Frontend Developer tại Tech Corp Vietnam.',
+                    type: 'success',
+                    category: 'job',
+                    isRead: false,
+                    createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(), // 2 giờ trước
+                    actionUrl: '../student/my-applications.html'
+                },
+                {
+                    id: '2',
+                    title: 'Lịch phỏng vấn mới',
+                    message: 'Bạn được mời tham gia phỏng vấn cho vị trí React Developer vào 20/12/2024 lúc 14:00.',
+                    type: 'warning',
+                    category: 'job',
+                    isRead: false,
+                    createdAt: new Date(Date.now() - 5 * 60 * 60 * 1000).toISOString(), // 5 giờ trước
+                    actionUrl: '../student/my-applications.html'
+                },
+                {
+                    id: '3',
+                    title: 'Công việc mới phù hợp',
+                    message: 'Có 3 công việc mới phù hợp với hồ sơ của bạn. Khám phá ngay!',
+                    type: 'info',
+                    category: 'job',
+                    isRead: true,
+                    createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(), // 1 ngày trước
+                    actionUrl: '../student/job-search.html'
+                },
+                {
+                    id: '4',
+                    title: 'Cập nhật hồ sơ',
+                    message: 'Hồ sơ của bạn đã không được cập nhật trong 30 ngày. Hãy cập nhật để nhận nhiều cơ hội hơn.',
+                    type: 'danger',
+                    category: 'system',
+                    isRead: true,
+                    createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(), // 2 ngày trước
+                    actionUrl: '../student/student-profile.html'
+                },
+                {
+                    id: '5',
+                    title: 'Hoàn thành hồ sơ',
+                    message: 'Hồ sơ của bạn đã đạt 85% hoàn thiện. Tiếp tục cập nhật để tăng cơ hội việc làm!',
+                    type: 'info',
+                    category: 'system',
+                    isRead: true,
+                    createdAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(), // 3 ngày trước
+                    actionUrl: '../student/student-profile.html'
+                }
+            ];
+            
+            return sampleNotifications;
+        }
+
+        // Hiển thị thông báo
+        function displayNotifications() {
+            const filteredNotifications = filterNotificationsByType(currentFilter);
+            
+            const containers = {
+                'all': 'allNotifications',
+                'unread': 'unreadNotifications',
+                'job': 'jobNotifications',
+                'system': 'systemNotifications'
+            };
+            
+            Object.keys(containers).forEach(filter => {
+                const containerId = containers[filter];
+                const container = document.getElementById(containerId);
+                const notificationsToShow = filter === 'all' ? allNotifications : filterNotificationsByType(filter);
+                
+                if (notificationsToShow.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center text-muted py-4">
+                            <i class="bi bi-bell-slash display-4"></i>
+                            <p class="mt-2">Không có thông báo nào</p>
+                        </div>
+                    `;
+                } else {
+                    container.innerHTML = notificationsToShow.map(notification => `
+                        <div class="notification-card ${notification.isRead ? '' : 'unread'}" data-id="${notification.id}">
+                            <div class="d-flex align-items-start">
+                                <div class="notification-icon ${notification.type}">
+                                    <i class="bi ${getNotificationIcon(notification.type)}"></i>
+                                </div>
+                                <div class="flex-grow-1">
+                                    <h6 class="fw-semibold mb-1">${notification.title}</h6>
+                                    <p class="text-muted mb-2">${notification.message}</p>
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <small class="text-muted">
+                                            <i class="bi bi-clock me-1"></i>${formatTimeAgo(notification.createdAt)}
+                                        </small>
+                                        <div>
+                                            ${notification.actionUrl ? `<a href="${notification.actionUrl}" class="btn btn-sm btn-outline-primary me-1">Xem ngay</a>` : ''}
+                                            ${!notification.isRead ? `<button class="btn btn-sm btn-outline-primary" onclick="markAsRead('${notification.id}')">Đánh dấu đã đọc</button>` : ''}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+            });
+        }
+
+        // Lọc thông báo theo loại
+        function filterNotificationsByType(filter) {
+            switch (filter) {
+                case 'unread':
+                    return allNotifications.filter(n => !n.isRead);
+                case 'job':
+                    return allNotifications.filter(n => n.category === 'job');
+                case 'system':
+                    return allNotifications.filter(n => n.category === 'system');
+                default:
+                    return allNotifications;
+            }
+        }
+
+        // Lọc thông báo
+        function filterNotifications(filter) {
+            currentFilter = filter;
+            displayNotifications();
+        }
+
+        // Lấy icon cho loại thông báo
+        function getNotificationIcon(type) {
+            const icons = {
+                'info': 'bi-info-circle',
+                'success': 'bi-check-circle-fill',
+                'warning': 'bi-calendar-event',
+                'danger': 'bi-exclamation-triangle'
+            };
+            return icons[type] || 'bi-bell';
+        }
+
+        // Định dạng thời gian
+        function formatTimeAgo(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Vừa xong';
+            if (diffMins < 60) return `${diffMins} phút trước`;
+            if (diffHours < 24) return `${diffHours} giờ trước`;
+            if (diffDays < 7) return `${diffDays} ngày trước`;
+            
+            return date.toLocaleDateString('vi-VN');
+        }
+
+        // Đánh dấu đã đọc
+        function markAsRead(notificationId) {
+            const notification = allNotifications.find(n => n.id === notificationId);
+            if (notification) {
+                notification.isRead = true;
+                localStorage.setItem(`jobhub_notifications_${userData.id}`, JSON.stringify(allNotifications));
+                displayNotifications();
+                updateNotificationBadge();
+            }
+        }
+
+        // Đánh dấu tất cả đã đọc
+        function markAllAsRead() {
+            allNotifications.forEach(notification => {
+                notification.isRead = true;
+            });
+            localStorage.setItem(`jobhub_notifications_${userData.id}`, JSON.stringify(allNotifications));
+            displayNotifications();
+            updateNotificationBadge();
+            alert('Đã đánh dấu tất cả thông báo là đã đọc!');
+        }
+
+        // Xóa tất cả thông báo
+        function clearAllNotifications() {
+            if (confirm('Bạn có chắc muốn xóa tất cả thông báo?')) {
+                allNotifications = [];
+                localStorage.setItem(`jobhub_notifications_${userData.id}`, JSON.stringify(allNotifications));
+                displayNotifications();
+                updateNotificationBadge();
+                alert('Đã xóa tất cả thông báo!');
+            }
+        }
+
+        // Tải thêm thông báo
+        function loadMoreNotifications() {
+            // Trong thực tế, bạn sẽ gọi API để tải thêm thông báo
+            // Ở đây chỉ hiển thị thông báo
+            alert('Tính năng tải thêm thông báo đang được phát triển');
+        }
+
+        // Cập nhật badge thông báo
+        function updateNotificationBadge() {
+            const unreadCount = allNotifications.filter(n => !n.isRead).length;
+            const badge = document.getElementById('notificationBadge');
+            
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount;
+                badge.style.display = 'block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        // Đăng xuất
+        function handleLogout() {
+            AUTH.logout();
+        }
+
+        // Hiển thị loading
+        function showLoading() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('notificationsContent').style.display = 'none';
+        }
+
+        // Ẩn loading
+        function hideLoading() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+            document.getElementById('notificationsContent').style.display = 'block';
+        }
+    </script>
+</body>
+</html>

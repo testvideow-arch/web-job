@@ -1,0 +1,785 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cài Đặt - JobHub</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .settings-container {
+            min-height: 100vh;
+            background: #f8f9fa;
+            padding-top: 80px;
+        }
+        .settings-sidebar {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 0;
+            position: sticky;
+            top: 100px;
+        }
+        .settings-sidebar .nav-link {
+            padding: 1rem 1.5rem;
+            border: none;
+            border-left: 3px solid transparent;
+            color: var(--dark-color);
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+        .settings-sidebar .nav-link.active {
+            background: rgba(13, 110, 253, 0.1);
+            border-left-color: var(--primary-color);
+            color: var(--primary-color);
+        }
+        .settings-sidebar .nav-link:hover {
+            background: rgba(13, 110, 253, 0.05);
+        }
+        .settings-content {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+        }
+        .settings-section {
+            margin-bottom: 2.5rem;
+        }
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--dark-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 0.5rem;
+        }
+        .avatar-upload {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+        .avatar-upload img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+        .avatar-upload .btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky-top bg-white shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="../index.html">
+                    <div class="logo-icon me-2">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <span class="fw-bold">JobHub</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="../student/student-dashboard.html">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../student/job-search.html">Tìm việc</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../student/my-cvs.html">CV của tôi</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../shared/notifications.html">Thông báo</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-2 align-items-center">
+                        <a href="notifications.html" class="btn btn-outline-secondary btn-sm position-relative">
+                            <i class="bi bi-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
+                        </a>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1"></i>Nguyễn Văn A
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="../student/student-profile.html">Hồ sơ</a></li>
+                                <li><a class="dropdown-item active" href="settings.html">Cài đặt</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="../index.html">Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="settings-container">
+        <div class="container">
+            <div class="row g-4">
+                <!-- Sidebar -->
+                <div class="col-lg-3">
+                    <div class="settings-sidebar">
+                        <div class="p-3 border-bottom">
+                            <h5 class="fw-bold mb-0">Cài đặt</h5>
+                        </div>
+                        <nav class="nav flex-column">
+                            <a class="nav-link" href="#profile" onclick="showSection('profile')">
+                                <i class="bi bi-person me-2"></i>Thông tin cá nhân
+                            </a>
+                            <a class="nav-link" href="#notifications" onclick="showSection('notifications')">
+                                <i class="bi bi-bell me-2"></i>Thông báo
+                            </a>
+                            <a class="nav-link" href="#security" onclick="showSection('security')">
+                                <i class="bi bi-shield-lock me-2"></i>Bảo mật
+                            </a>
+                            <a class="nav-link" href="#privacy" onclick="showSection('privacy')">
+                                <i class="bi bi-eye me-2"></i>Quyền riêng tư
+                            </a>
+                            <a class="nav-link" href="#preferences" onclick="showSection('preferences')">
+                                <i class="bi bi-gear me-2"></i>Tùy chọn
+                            </a>
+                            <a class="nav-link" href="#account" onclick="showSection('account')">
+                                <i class="bi bi-person-badge me-2"></i>Tài khoản
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="col-lg-9">
+                    <div class="settings-content">
+                        <!-- Profile Section -->
+                        <div id="profile-section" class="settings-section">
+                            <h2 class="section-title">Thông tin cá nhân</h2>
+                            
+                            <div class="row align-items-center mb-4">
+                                <div class="col-auto">
+                                    <div class="avatar-upload">
+                                        <img src="../assets/avatar-placeholder.png" alt="Avatar" id="avatarPreview">
+                                        <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('avatarInput').click()">
+                                            <i class="bi bi-camera"></i>
+                                        </button>
+                                        <input type="file" id="avatarInput" accept="image/*" class="d-none" onchange="previewAvatar(event)">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h5 class="fw-bold mb-1">Nguyễn Văn A</h5>
+                                    <p class="text-muted mb-2">nguyenvana@example.com</p>
+                                    <span class="badge bg-primary">Sinh viên</span>
+                                </div>
+                            </div>
+
+                            <form id="profileForm">
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Họ và tên</label>
+                                        <input type="text" class="form-control" value="Nguyễn Văn A">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Email</label>
+                                        <input type="email" class="form-control" value="nguyenvana@example.com" readonly>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Số điện thoại</label>
+                                        <input type="tel" class="form-control" value="+84 123 456 789">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Ngày sinh</label>
+                                        <input type="date" class="form-control" value="2002-05-15">
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label fw-semibold">Địa chỉ</label>
+                                        <textarea class="form-control" rows="3">123 Đường ABC, Quận 1, TP.HCM</textarea>
+                                    </div>
+                                    <div class="col-12">
+                                        <label class="form-label fw-semibold">Giới thiệu bản thân</label>
+                                        <textarea class="form-control" rows="4" placeholder="Mô tả ngắn về bản thân...">Sinh viên năm cuối ngành Công nghệ Thông tin với đam mê phát triển frontend. Đang tìm kiếm cơ hội thực tập và làm việc trong môi trường chuyên nghiệp.</textarea>
+                                    </div>
+                                </div>
+                                
+                                <div class="mt-4">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-check-circle me-2"></i>Lưu thay đổi
+                                    </button>
+                                    <button type="button" class="btn btn-outline-secondary" onclick="resetProfileForm()">
+                                        Hủy bỏ
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Notifications Section -->
+                        <div id="notifications-section" class="settings-section d-none">
+                            <h2 class="section-title">Cài đặt thông báo</h2>
+                            <p class="text-muted mb-4">Quản lý cách bạn nhận thông báo từ JobHub</p>
+
+                            <div class="mb-4">
+                                <h5 class="fw-semibold mb-3">Thông báo Email</h5>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="emailJobAlerts" checked>
+                                    <label class="form-check-label" for="emailJobAlerts">
+                                        Cảnh báo việc làm mới
+                                    </label>
+                                    <div class="form-text">Nhận email khi có công việc mới phù hợp với hồ sơ của bạn</div>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="emailApplicationUpdates" checked>
+                                    <label class="form-check-label" for="emailApplicationUpdates">
+                                        Cập nhật ứng tuyển
+                                    </label>
+                                    <div class="form-text">Thông báo về trạng thái hồ sơ ứng tuyển</div>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="emailNewsletter">
+                                    <label class="form-check-label" for="emailNewsletter">
+                                        Bản tin JobHub
+                                    </label>
+                                    <div class="form-text">Tin tức và mẹo hướng nghiệp hàng tuần</div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="fw-semibold mb-3">Thông báo Push</h5>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="pushInterviewInvites" checked>
+                                    <label class="form-check-label" for="pushInterviewInvites">
+                                        Lời mời phỏng vấn
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="pushMessages" checked>
+                                    <label class="form-check-label" for="pushMessages">
+                                        Tin nhắn từ nhà tuyển dụng
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="pushSystem">
+                                    <label class="form-check-label" for="pushSystem">
+                                        Thông báo hệ thống
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <button class="btn btn-primary" onclick="saveNotificationSettings()">
+                                    <i class="bi bi-check-circle me-2"></i>Lưu cài đặt
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Security Section -->
+                        <div id="security-section" class="settings-section d-none">
+                            <h2 class="section-title">Bảo mật tài khoản</h2>
+                            
+                            <div class="mb-4">
+                                <h5 class="fw-semibold mb-3">Đổi mật khẩu</h5>
+                                <form id="passwordForm">
+                                    <div class="row g-3">
+                                        <div class="col-12">
+                                            <label class="form-label fw-semibold">Mật khẩu hiện tại</label>
+                                            <div class="position-relative">
+                                                <input type="password" class="form-control" id="currentPassword" required>
+                                                <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3 btn-link-clean" onclick="togglePassword('currentPassword', 'toggleCurrentPasswordIcon')">
+                                                    <i class="bi bi-eye" id="toggleCurrentPasswordIcon"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold">Mật khẩu mới</label>
+                                            <div class="position-relative">
+                                                <input type="password" class="form-control" id="newPassword" required minlength="8">
+                                                <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3 btn-link-clean" onclick="togglePassword('newPassword', 'toggleNewPasswordIcon')">
+                                                    <i class="bi bi-eye" id="toggleNewPasswordIcon"></i>
+                                                </button>
+                                            </div>
+                                            <div id="passwordStrength" class="form-text"></div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label class="form-label fw-semibold">Xác nhận mật khẩu</label>
+                                            <div class="position-relative">
+                                                <input type="password" class="form-control" id="confirmPassword" required>
+                                                <button type="button" class="btn btn-link position-absolute end-0 top-50 translate-middle-y pe-3 btn-link-clean" onclick="togglePassword('confirmPassword', 'toggleConfirmPasswordIcon')">
+                                                    <i class="bi bi-eye" id="toggleConfirmPasswordIcon"></i>
+                                                </button>
+                                            </div>
+                                            <div id="passwordMatch" class="form-text"></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-3">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="bi bi-shield-check me-2"></i>Cập nhật mật khẩu
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="fw-semibold mb-3">Đăng nhập hai yếu tố</h5>
+                                <div class="alert alert-info">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    Bảo vệ tài khoản của bạn bằng xác thực hai yếu tố
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="twoFactorAuth">
+                                    <label class="form-check-label fw-semibold" for="twoFactorAuth">
+                                        Bật xác thực hai yếu tố
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div>
+                                <h5 class="fw-semibold mb-3">Phiên đăng nhập</h5>
+                                <div class="table-responsive">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Thiết bị</th>
+                                                <th>Địa điểm</th>
+                                                <th>Thời gian</th>
+                                                <th>Hành động</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>
+                                                    <i class="bi bi-laptop me-2"></i>Chrome trên Windows
+                                                </td>
+                                                <td>Hồ Chí Minh, Vietnam</td>
+                                                <td>Hiện tại</td>
+                                                <td><span class="badge bg-success">Active</span></td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <i class="bi bi-phone me-2"></i>Safari trên iPhone
+                                                </td>
+                                                <td>Hồ Chí Minh, Vietnam</td>
+                                                <td>2 giờ trước</td>
+                                                <td><button class="btn btn-sm btn-outline-danger">Thu hồi</button></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Privacy Section -->
+                        <div id="privacy-section" class="settings-section d-none">
+                            <h2 class="section-title">Quyền riêng tư</h2>
+                            
+                            <div class="mb-4">
+                                <h5 class="fw-semibold mb-3">Hiển thị hồ sơ</h5>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="profileVisibility" id="publicProfile" checked>
+                                    <label class="form-check-label fw-semibold" for="publicProfile">
+                                        Công khai
+                                    </label>
+                                    <div class="form-text">Tất cả nhà tuyển dụng có thể xem hồ sơ của bạn</div>
+                                </div>
+                                <div class="form-check mb-3">
+                                    <input class="form-check-input" type="radio" name="profileVisibility" id="privateProfile">
+                                    <label class="form-check-label fw-semibold" for="privateProfile">
+                                        Riêng tư
+                                    </label>
+                                    <div class="form-text">Chỉ nhà tuyển dụng bạn ứng tuyển mới xem được hồ sơ</div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="fw-semibold mb-3">Thông tin liên hệ</h5>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="showEmail" checked>
+                                    <label class="form-check-label" for="showEmail">
+                                        Hiển thị email trong hồ sơ
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="showPhone">
+                                    <label class="form-check-label" for="showPhone">
+                                        Hiển thị số điện thoại
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="showAddress">
+                                    <label class="form-check-label" for="showAddress">
+                                        Hiển thị địa chỉ
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="fw-semibold mb-3">Quyền riêng tư dữ liệu</h5>
+                                <div class="alert alert-warning">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    Bạn có quyền yêu cầu xuất hoặc xóa dữ liệu cá nhân của mình
+                                </div>
+                                <div class="d-flex gap-2">
+                                    <button class="btn btn-outline-primary" onclick="exportData()">
+                                        <i class="bi bi-download me-2"></i>Xuất dữ liệu
+                                    </button>
+                                    <button class="btn btn-outline-danger" onclick="requestDataDeletion()">
+                                        <i class="bi bi-trash me-2"></i>Yêu cầu xóa dữ liệu
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <button class="btn btn-primary" onclick="savePrivacySettings()">
+                                    <i class="bi bi-check-circle me-2"></i>Lưu cài đặt
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Preferences Section -->
+                        <div id="preferences-section" class="settings-section d-none">
+                            <h2 class="section-title">Tùy chọn</h2>
+                            
+                            <div class="mb-4">
+                                <h5 class="fw-semibold mb-3">Ngôn ngữ & Vùng</h5>
+                                <div class="row g-3">
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Ngôn ngữ</label>
+                                        <select class="form-select">
+                                            <option value="vi" selected>Tiếng Việt</option>
+                                            <option value="en">English</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label class="form-label fw-semibold">Múi giờ</label>
+                                        <select class="form-select">
+                                            <option value="+7" selected>GMT+7 (Vietnam)</option>
+                                            <option value="+0">GMT+0 (UTC)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="fw-semibold mb-3">Tùy chọn hiển thị</h5>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="darkMode">
+                                    <label class="form-check-label" for="darkMode">
+                                        Chế độ tối
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch mb-3">
+                                    <input class="form-check-input" type="checkbox" id="compactView" checked>
+                                    <label class="form-check-label" for="compactView">
+                                        Hiển thị thu gọn
+                                    </label>
+                                </div>
+                                <div class="form-check form-switch">
+                                    <input class="form-check-input" type="checkbox" id="animations" checked>
+                                    <label class="form-check-label" for="animations">
+                                        Hiệu ứng chuyển động
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="fw-semibold mb-3">Tự động đăng xuất</h5>
+                                <select class="form-select" style="max-width: 200px;">
+                                    <option value="1">Sau 1 giờ</option>
+                                    <option value="4" selected>Sau 4 giờ</option>
+                                    <option value="8">Sau 8 giờ</option>
+                                    <option value="24">Sau 24 giờ</option>
+                                    <option value="never">Không bao giờ</option>
+                                </select>
+                            </div>
+
+                            <div class="mt-4">
+                                <button class="btn btn-primary" onclick="savePreferences()">
+                                    <i class="bi bi-check-circle me-2"></i>Lưu tùy chọn
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Account Section -->
+                        <div id="account-section" class="settings-section d-none">
+                            <h2 class="section-title">Quản lý tài khoản</h2>
+                            
+                            <div class="mb-4">
+                                <h5 class="fw-semibold mb-3">Trạng thái tài khoản</h5>
+                                <div class="alert alert-success">
+                                    <i class="bi bi-check-circle me-2"></i>
+                                    Tài khoản của bạn đang hoạt động bình thường
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <p><strong>Ngày đăng ký:</strong> 15/01/2024</p>
+                                        <p><strong>Loại tài khoản:</strong> Sinh viên</p>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <p><strong>Lần đăng nhập cuối:</strong> 18/12/2024 14:30</p>
+                                        <p><strong>Trạng thái xác thực:</strong> <span class="badge bg-success">Đã xác thực</span></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="fw-semibold mb-3">Tài khoản liên kết</h5>
+                                <div class="d-flex flex-column gap-2">
+                                    <div class="d-flex justify-content-between align-items-center p-3 border rounded">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-google text-danger me-2"></i>
+                                            <span>Google</span>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-danger">Hủy liên kết</button>
+                                    </div>
+                                    <div class="d-flex justify-content-between align-items-center p-3 border rounded">
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-facebook text-primary me-2"></i>
+                                            <span>Facebook</span>
+                                        </div>
+                                        <button class="btn btn-sm btn-outline-primary">Liên kết</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <h5 class="fw-semibold text-danger mb-3">Vùng nguy hiểm</h5>
+                                <div class="alert alert-danger">
+                                    <i class="bi bi-exclamation-triangle me-2"></i>
+                                    Các hành động này không thể hoàn tác. Vui lòng thận trọng.
+                                </div>
+                                
+                                <div class="d-flex flex-column gap-2">
+                                    <button class="btn btn-outline-danger text-start" onclick="deactivateAccount()">
+                                        <i class="bi bi-pause-circle me-2"></i>
+                                        Tạm ngưng tài khoản
+                                    </button>
+                                    <button class="btn btn-outline-danger text-start" onclick="deleteAccount()">
+                                        <i class="bi bi-trash me-2"></i>
+                                        Xóa tài khoản vĩnh viễn
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="logo-icon me-2">
+                            <i class="bi bi-briefcase"></i>
+                        </div>
+                        <span class="fw-bold">JobHub</span>
+                    </div>
+                    <p class="text-muted small mb-3">
+                        Nền tảng kết nối sinh viên với cơ hội việc làm từ các doanh nghiệp uy tín.
+                    </p>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <h5 class="mb-3">Dành cho sinh viên</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="../student/job-search.html" class="text-muted text-decoration-none">Tìm việc làm</a></li>
+                        <li><a href="../student/saved-jobs.html" class="text-muted text-decoration-none">Việc làm đã lưu</a></li>
+                        <li><a href="../student/student-profile.html" class="text-muted text-decoration-none">Hồ sơ của tôi</a></li>
+                        <li><a href="../blog.html" class="text-muted text-decoration-none">Hướng nghiệp</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5 class="mb-3">Dành cho nhà tuyển dụng</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="../employer/post-job.html" class="text-muted text-decoration-none">Đăng tuyển dụng</a></li>
+                        <li><a href="../index.html#companies" class="text-muted text-decoration-none">Đối tác</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Liên hệ</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5 class="mb-3">Liên hệ</h5>
+                    <ul class="list-unstyled text-muted">
+                        <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>123 Đường ABC, Quận 1, TP.HCM</li>
+                        <li class="mb-2"><i class="bi bi-telephone me-2"></i>+84 123 456 789</li>
+                        <li><i class="bi bi-envelope me-2"></i>support@jobhub.vn</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-secondary">
+            <div class="text-center text-muted">
+                <p class="mb-0">&copy; 2025 JobHub. Tất cả quyền được bảo lưu.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Section Navigation
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.settings-section').forEach(section => {
+                section.classList.add('d-none');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName + '-section').classList.remove('d-none');
+            
+            // Update active nav link
+            document.querySelectorAll('.settings-sidebar .nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            event.target.classList.add('active');
+        }
+
+        // Avatar Upload
+        function previewAvatar(event) {
+            const reader = new FileReader();
+            reader.onload = function() {
+                const output = document.getElementById('avatarPreview');
+                output.src = reader.result;
+            };
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // Password Toggle
+        function togglePassword(fieldId, iconId) {
+            const field = document.getElementById(fieldId);
+            const icon = document.getElementById(iconId);
+            
+            if (field.type === 'password') {
+                field.type = 'text';
+                icon.classList.remove('bi-eye');
+                icon.classList.add('bi-eye-slash');
+            } else {
+                field.type = 'password';
+                icon.classList.remove('bi-eye-slash');
+                icon.classList.add('bi-eye');
+            }
+        }
+
+        // Password Strength Check
+        function checkPasswordStrength(password) {
+            let strength = 0;
+            if (password.length >= 8) strength++;
+            if (/[A-Z]/.test(password)) strength++;
+            if (/[0-9]/.test(password)) strength++;
+            if (/[^A-Za-z0-9]/.test(password)) strength++;
+            
+            if (strength <= 1) return {text: 'Mật khẩu yếu', color: 'text-danger'};
+            if (strength <= 2) return {text: 'Mật khẩu trung bình', color: 'text-warning'};
+            return {text: 'Mật khẩu mạnh', color: 'text-success'};
+        }
+
+        // Form Submissions
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Thông tin cá nhân đã được cập nhật!');
+        });
+
+        document.getElementById('passwordForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            if (newPassword !== confirmPassword) {
+                alert('Mật khẩu xác nhận không khớp!');
+                return;
+            }
+            
+            alert('Mật khẩu đã được thay đổi thành công!');
+        });
+
+        // Account Actions
+        function deactivateAccount() {
+            if (confirm('Bạn có chắc muốn tạm ngưng tài khoản? Bạn có thể kích hoạt lại bất cứ lúc nào.')) {
+                alert('Tài khoản đã được tạm ngưng!');
+            }
+        }
+
+        function deleteAccount() {
+            if (confirm('CẢNH BÁO: Đây là hành động không thể hoàn tác. Tất cả dữ liệu của bạn sẽ bị xóa vĩnh viễn. Bạn có chắc chắn?')) {
+                alert('Yêu cầu xóa tài khoản đã được ghi nhận. Chúng tôi sẽ xử lý trong vòng 24h.');
+            }
+        }
+
+        function exportData() {
+            alert('Yêu cầu xuất dữ liệu đã được ghi nhận. File sẽ được gửi đến email của bạn.');
+        }
+
+        function requestDataDeletion() {
+            if (confirm('Bạn có chắc muốn yêu cầu xóa tất cả dữ liệu cá nhân?')) {
+                alert('Yêu cầu xóa dữ liệu đã được ghi nhận. Chúng tôi sẽ xử lý theo quy định bảo mật.');
+            }
+        }
+
+        // Save Settings
+        function saveNotificationSettings() {
+            alert('Cài đặt thông báo đã được lưu!');
+        }
+
+        function savePrivacySettings() {
+            alert('Cài đặt quyền riêng tư đã được lưu!');
+        }
+
+        function savePreferences() {
+            alert('Tùy chọn đã được lưu!');
+        }
+
+        function resetProfileForm() {
+            document.getElementById('profileForm').reset();
+            alert('Đã hủy các thay đổi!');
+        }
+
+        // Real-time password strength check
+        document.getElementById('newPassword')?.addEventListener('input', function() {
+            const strength = checkPasswordStrength(this.value);
+            const strengthElement = document.getElementById('passwordStrength');
+            if (strengthElement) {
+                strengthElement.textContent = strength.text;
+                strengthElement.className = 'form-text ' + strength.color;
+            }
+        });
+
+        // Real-time password match check
+        document.getElementById('confirmPassword')?.addEventListener('input', function() {
+            const newPassword = document.getElementById('newPassword').value;
+            const matchElement = document.getElementById('passwordMatch');
+            if (matchElement) {
+                if (this.value === newPassword) {
+                    matchElement.textContent = 'Mật khẩu khớp';
+                    matchElement.className = 'form-text text-success';
+                } else {
+                    matchElement.textContent = 'Mật khẩu không khớp';
+                    matchElement.className = 'form-text text-danger';
+                }
+            }
+        });
+    </script>
+</body>
+</html>

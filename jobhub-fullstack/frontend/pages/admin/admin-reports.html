@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Báo Cáo & Thống Kê - JobHub Admin</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .admin-container {
+            min-height: 100vh;
+            background: #f8f9fa;
+            padding-top: 80px;
+        }
+        .report-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 1.5rem;
+        }
+        .chart-placeholder {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 8px;
+            height: 300px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+        .metric-card {
+            text-align: center;
+            padding: 1rem;
+        }
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header (giống admin-dashboard) -->
+    <header class="sticky-top bg-white shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="../index.html">
+                    <div class="logo-icon me-2">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <span class="fw-bold">JobHub</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin-dashboard.html">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin-pending-jobs.html">Duyệt tin</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin-users.html">Người dùng</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="admin-categories.html">Danh mục</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link active" href="admin-reports.html">Báo cáo</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-2 align-items-center">
+                        <a href="../shared/notifications.html" class="btn btn-outline-secondary btn-sm position-relative">
+                            <i class="bi bi-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">5</span>
+                        </a>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-shield-check me-1"></i>Admin
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="../shared/settings.html">Cài đặt</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" href="../index.html">Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="admin-container">
+        <div class="container">
+            <!-- Page Header -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h1 class="fw-bold mb-1">Báo Cáo & Thống Kê 📊</h1>
+                            <p class="text-muted mb-0">Phân tích và báo cáo toàn diện về hệ thống</p>
+                        </div>
+                        <div class="text-end">
+                            <button class="btn btn-primary">
+                                <i class="bi bi-download me-1"></i>Xuất báo cáo
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Date Range Filter -->
+            <div class="report-card">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label">Từ ngày</label>
+                        <input type="date" class="form-control" value="2024-12-01">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Đến ngày</label>
+                        <input type="date" class="form-control" value="2024-12-18">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">Loại báo cáo</label>
+                        <select class="form-select">
+                            <option selected>Tổng quan</option>
+                            <option>Người dùng</option>
+                            <option>Tin tuyển dụng</option>
+                            <option>Ứng tuyển</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <button class="btn btn-primary w-100">
+                            <i class="bi bi-filter me-1"></i>Áp dụng
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Key Metrics -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-2">
+                    <div class="report-card metric-card">
+                        <div class="metric-value text-primary">5,678</div>
+                        <div class="text-muted">Sinh viên</div>
+                        <small class="text-success">+12%</small>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="report-card metric-card">
+                        <div class="metric-value text-success">234</div>
+                        <div class="text-muted">Nhà tuyển dụng</div>
+                        <small class="text-success">+5%</small>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="report-card metric-card">
+                        <div class="metric-value text-warning">1,234</div>
+                        <div class="text-muted">Tin tuyển dụng</div>
+                        <small class="text-success">+8%</small>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="report-card metric-card">
+                        <div class="metric-value text-info">892</div>
+                        <div class="text-muted">Ứng tuyển</div>
+                        <small class="text-success">+15%</small>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="report-card metric-card">
+                        <div class="metric-value text-purple">67%</div>
+                        <div class="text-muted">Tỷ lệ thành công</div>
+                        <small class="text-success">+3%</small>
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <div class="report-card metric-card">
+                        <div class="metric-value text-danger">2.3%</div>
+                        <div class="text-muted">Tỷ lệ từ chối</div>
+                        <small class="text-danger">-0.5%</small>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-4">
+                <!-- Charts -->
+                <div class="col-lg-8">
+                    <div class="report-card">
+                        <h5 class="fw-bold mb-4">Tăng trưởng người dùng</h5>
+                        <div class="chart-placeholder">
+                            Biểu đồ tăng trưởng người dùng theo tháng
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Top Categories -->
+                <div class="col-lg-4">
+                    <div class="report-card">
+                        <h5 class="fw-bold mb-4">Top ngành nghề</h5>
+                        <div class="list-group">
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-laptop text-primary me-2"></i>
+                                    Công nghệ thông tin
+                                </div>
+                                <span class="badge bg-primary">156</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-brush text-success me-2"></i>
+                                    Thiết kế & Sáng tạo
+                                </div>
+                                <span class="badge bg-success">89</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-graph-up text-warning me-2"></i>
+                                    Kinh doanh & Bán hàng
+                                </div>
+                                <span class="badge bg-warning">67</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-megaphone text-info me-2"></i>
+                                    Marketing
+                                </div>
+                                <span class="badge bg-info">45</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-calculator text-secondary me-2"></i>
+                                    Kế toán & Tài chính
+                                </div>
+                                <span class="badge bg-secondary">34</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Reports -->
+            <div class="row g-4 mt-2">
+                <div class="col-lg-6">
+                    <div class="report-card">
+                        <h5 class="fw-bold mb-4">Thống kê ứng tuyển</h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm">
+                                <thead>
+                                    <tr>
+                                        <th>Trạng thái</th>
+                                        <th>Số lượng</th>
+                                        <th>Tỷ lệ</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Đã nộp</td>
+                                        <td>892</td>
+                                        <td>100%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Đã xem</td>
+                                        <td>567</td>
+                                        <td>63.6%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Mời phỏng vấn</td>
+                                        <td>234</td>
+                                        <td>26.2%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Đã tuyển</td>
+                                        <td>89</td>
+                                        <td>10%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Từ chối</td>
+                                        <td>45</td>
+                                        <td>5%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-lg-6">
+                    <div class="report-card">
+                        <h5 class="fw-bold mb-4">Hoạt động hệ thống</h5>
+                        <div class="list-group">
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    Tin tuyển dụng đã duyệt
+                                </div>
+                                <span class="badge bg-success">156</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-clock text-warning me-2"></i>
+                                    Tin chờ duyệt
+                                </div>
+                                <span class="badge bg-warning">8</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-x-circle text-danger me-2"></i>
+                                    Tin bị từ chối
+                                </div>
+                                <span class="badge bg-danger">12</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-flag text-info me-2"></i>
+                                    Tin bị báo cáo
+                                </div>
+                                <span class="badge bg-info">5</span>
+                            </div>
+                            <div class="list-group-item d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-shield-exclamation text-purple me-2"></i>
+                                    User bị khóa
+                                </div>
+                                <span class="badge bg-purple">3</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <!-- Footer content -->
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

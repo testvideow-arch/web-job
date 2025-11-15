@@ -1,0 +1,853 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hồ Sơ Sinh Viên - JobHub</title>
+    
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .profile-container {
+            min-height: 100vh;
+            background: #f8f9fa;
+            padding-top: 80px;
+        }
+        .profile-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .profile-header {
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .avatar-upload {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+        .avatar-upload img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #e9ecef;
+        }
+        .avatar-upload .btn {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--dark-color);
+        }
+        .loading-spinner {
+            display: none;
+        }
+        .skill-badge {
+            position: relative;
+            padding-right: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .skill-remove {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            opacity: 0.7;
+            font-size: 0.8rem;
+        }
+        .skill-remove:hover {
+            opacity: 1;
+        }
+        .form-control:read-only {
+            background-color: #f8f9fa;
+            border-color: #e9ecef;
+        }
+        .alert-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 9999;
+            min-width: 300px;
+        }
+        .save-loading {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Alert Container -->
+    <div class="alert-container" id="alertContainer"></div>
+
+    <!-- Header -->
+    <header class="sticky-top bg-white shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="../index.html">
+                    <div class="logo-icon me-2">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <span class="fw-bold">JobHub</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="student-dashboard.html">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="job-search.html">Tìm việc</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="my-cvs.html">CV của tôi</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="my-applications.html">Ứng tuyển</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../blog.html">Blog</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-2 align-items-center">
+                        <a href="../shared/notifications.html" class="btn btn-outline-secondary btn-sm position-relative">
+                            <i class="bi bi-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger" id="notificationCount">0</span>
+                        </a>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1"></i><span id="userFullName">Đang tải...</span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item active" href="student-profile.html">Hồ sơ</a></li>
+                                <li><a class="dropdown-item" href="../shared/settings.html">Cài đặt</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" onclick="handleLogout()">Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="profile-container">
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    <!-- Loading Spinner -->
+                    <div class="text-center loading-spinner" id="loadingSpinner">
+                        <div class="spinner-border text-primary" role="status">
+                            <span class="visually-hidden">Đang tải...</span>
+                        </div>
+                        <p class="mt-2">Đang tải thông tin hồ sơ...</p>
+                    </div>
+
+                    <!-- Profile Card -->
+                    <div class="profile-card" id="profileCard" style="display: none;">
+                        <div class="profile-header">
+                            <div class="row align-items-center">
+                                <div class="col-auto">
+                                    <div class="avatar-upload">
+                                        <img src="../assets/avatar-placeholder.png" alt="Avatar" id="avatarPreview">
+                                        <button type="button" class="btn btn-primary btn-sm" onclick="document.getElementById('avatarInput').click()">
+                                            <i class="bi bi-camera"></i>
+                                        </button>
+                                        <input type="file" id="avatarInput" accept="image/*" class="d-none" onchange="uploadAvatar(event)">
+                                    </div>
+                                </div>
+                                <div class="col">
+                                    <h2 class="fw-bold mb-1" id="profileFullName">Đang tải...</h2>
+                                    <p class="text-muted mb-2">
+                                        <i class="bi bi-geo-alt me-1"></i><span id="profileLocation">Chưa cập nhật</span>
+                                    </p>
+                                    <div class="d-flex gap-2">
+                                        <span class="badge bg-primary">Sinh viên</span>
+                                        <span class="badge bg-success" id="jobStatus">Đang tìm việc</span>
+                                    </div>
+                                </div>
+                                <div class="col-auto">
+                                    <button class="btn btn-outline-primary" id="editToggleBtn" onclick="toggleEditMode()">
+                                        <i class="bi bi-pencil me-1"></i>Chỉnh sửa
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Personal Information -->
+                        <div class="mb-4">
+                            <h5 class="section-title">Thông tin cá nhân</h5>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label">Họ và tên <span class="text-danger">*</span></label>
+                                    <input type="text" class="form-control" id="fullName" name="fullName" readonly required>
+                                    <div class="invalid-feedback">Vui lòng nhập họ và tên</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Email <span class="text-danger">*</span></label>
+                                    <input type="email" class="form-control" id="email" name="email" readonly required>
+                                    <div class="invalid-feedback">Vui lòng nhập email hợp lệ</div>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Số điện thoại</label>
+                                    <input type="tel" class="form-control" id="phone" name="phone" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Mã sinh viên</label>
+                                    <input type="text" class="form-control" id="studentCode" name="studentCode" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Trường đại học</label>
+                                    <input type="text" class="form-control" id="university" name="university" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Chuyên ngành</label>
+                                    <input type="text" class="form-control" id="major" name="major" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">Năm tốt nghiệp</label>
+                                    <input type="number" class="form-control" id="graduationYear" name="graduationYear" min="2000" max="2030" readonly>
+                                </div>
+                                <div class="col-md-6">
+                                    <label class="form-label">GPA</label>
+                                    <input type="number" class="form-control" id="gpa" name="gpa" step="0.01" min="0" max="4" readonly>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Skills -->
+                        <div class="mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="section-title mb-0">Kỹ năng</h5>
+                                <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#skillModal" id="addSkillBtn" style="display: none;">
+                                    <i class="bi bi-plus me-1"></i>Thêm kỹ năng
+                                </button>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2" id="skillsContainer">
+                                <div class="text-muted">
+                                    <i class="bi bi-info-circle me-1"></i>
+                                    Chưa có kỹ năng nào. Nhấn "Chỉnh sửa" để thêm kỹ năng.
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bio -->
+                        <div class="mb-4">
+                            <h5 class="section-title">Giới thiệu bản thân</h5>
+                            <textarea class="form-control" id="bio" name="bio" rows="4" readonly placeholder="Thêm giới thiệu về bản thân, kinh nghiệm, mục tiêu nghề nghiệp..."></textarea>
+                        </div>
+
+                        <!-- Save Buttons -->
+                        <div class="d-flex justify-content-end gap-2" id="saveButtons" style="display: none;">
+                            <button class="btn btn-secondary" onclick="cancelEdit()">Hủy</button>
+                            <button class="btn btn-primary" onclick="saveProfile()" id="saveButton">
+                                <i class="bi bi-check-lg me-1"></i>Lưu thay đổi
+                            </button>
+                            <div class="save-loading" id="saveLoading">
+                                <div class="spinner-border spinner-border-sm text-primary me-2" role="status">
+                                    <span class="visually-hidden">Đang lưu...</span>
+                                </div>
+                                Đang lưu...
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Skill Modal -->
+    <div class="modal fade" id="skillModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Thêm kỹ năng</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="skillForm">
+                        <div class="mb-3">
+                            <label class="form-label">Kỹ năng <span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" id="skillName" placeholder="Ví dụ: JavaScript, React, Python..." required>
+                            <div class="invalid-feedback">Vui lòng nhập tên kỹ năng</div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Mức độ thành thạo</label>
+                            <select class="form-select" id="proficiencyLevel">
+                                <option value="beginner">Mới bắt đầu</option>
+                                <option value="intermediate">Trung bình</option>
+                                <option value="advanced">Thành thạo</option>
+                                <option value="expert">Chuyên gia</option>
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="button" class="btn btn-primary" onclick="addSkill()">Thêm kỹ năng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-5 mt-5">
+        <div class="container">
+            <div class="row g-4">
+                <div class="col-md-3">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="logo-icon me-2">
+                            <i class="bi bi-briefcase"></i>
+                        </div>
+                        <span class="fw-bold">JobHub</span>
+                    </div>
+                    <p class="text-muted small mb-3">
+                        Nền tảng kết nối sinh viên với cơ hội việc làm từ các doanh nghiệp uy tín.
+                    </p>
+                    <div class="d-flex gap-2">
+                        <a href="#" class="social-icon"><i class="bi bi-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-linkedin"></i></a>
+                        <a href="#" class="social-icon"><i class="bi bi-instagram"></i></a>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <h5 class="mb-3">Dành cho sinh viên</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="job-search.html" class="text-muted text-decoration-none">Tìm việc làm</a></li>
+                        <li><a href="saved-jobs.html" class="text-muted text-decoration-none">Việc làm đã lưu</a></li>
+                        <li><a href="student-profile.html" class="text-muted text-decoration-none">Hồ sơ của tôi</a></li>
+                        <li><a href="../blog.html" class="text-muted text-decoration-none">Hướng nghiệp</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5 class="mb-3">Dành cho nhà tuyển dụng</h5>
+                    <ul class="list-unstyled">
+                        <li><a href="../employer/post-job.html" class="text-muted text-decoration-none">Đăng tuyển dụng</a></li>
+                        <li><a href="../index.html#companies" class="text-muted text-decoration-none">Đối tác</a></li>
+                        <li><a href="#" class="text-muted text-decoration-none">Liên hệ</a></li>
+                    </ul>
+                </div>
+                <div class="col-md-3">
+                    <h5 class="mb-3">Liên hệ</h5>
+                    <ul class="list-unstyled text-muted">
+                        <li class="mb-2"><i class="bi bi-geo-alt me-2"></i>123 Đường ABC, Quận 1, TP.HCM</li>
+                        <li class="mb-2"><i class="bi bi-telephone me-2"></i>+84 123 456 789</li>
+                        <li><i class="bi bi-envelope me-2"></i>support@jobhub.vn</li>
+                    </ul>
+                </div>
+            </div>
+            <hr class="my-4 bg-secondary">
+            <div class="text-center text-muted">
+                <p class="mb-0">&copy; 2025 JobHub. Tất cả quyền được bảo lưu.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
+    
+    <!-- JavaScript để xử lý profile -->
+    <script>
+        const API_BASE_URL = 'http://localhost:3000/api';
+        
+        // Biến lưu trạng thái chỉnh sửa
+        let isEditMode = false;
+        let originalData = {};
+        let currentSkills = [];
+
+        // Tải thông tin profile khi trang được load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Kiểm tra đăng nhập
+            if (!AUTH.requireAuth()) return;
+
+            // Hiển thị thông tin user ngay lập tức từ auth
+            const user = AUTH.getUser();
+            if (user) {
+                displayUserData(user);
+            }
+
+            loadStudentProfile();
+        });
+
+        // Hiển thị thông tin user từ auth (luôn có sẵn)
+        function displayUserData(user) {
+            document.getElementById('userFullName').textContent = user.fullName || 'Người dùng';
+            document.getElementById('profileFullName').textContent = user.fullName || 'Chưa cập nhật';
+            document.getElementById('fullName').value = user.fullName || '';
+            document.getElementById('email').value = user.email || '';
+            document.getElementById('phone').value = user.phone || '';
+        }
+
+        // Hàm tải thông tin sinh viên từ API
+        async function loadStudentProfile() {
+            try {
+                showLoading();
+                
+                const user = AUTH.getUser();
+                if (!user || !user.id) {
+                    throw new Error('Không tìm thấy thông tin người dùng');
+                }
+
+                // Lấy thông tin sinh viên từ API
+                const response = await fetch(`${API_BASE_URL}/students/user/${user.id}`);
+                
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        // Nếu không tìm thấy student, sử dụng thông tin từ user
+                        console.log('Chưa có student profile, sử dụng thông tin user');
+                        hideLoading();
+                        return;
+                    }
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                console.log('Dữ liệu nhận được:', result);
+
+                if (result.success) {
+                    displayStudentData(result.data);
+                } else {
+                    throw new Error(result.message || 'Không thể tải thông tin hồ sơ');
+                }
+                
+                hideLoading();
+            } catch (error) {
+                console.error('Lỗi khi tải hồ sơ:', error);
+                hideLoading();
+                showAlert('Không thể tải thông tin hồ sơ: ' + error.message, 'warning');
+            }
+        }
+
+        // Hiển thị dữ liệu sinh viên lên form
+        function displayStudentData(data) {
+            // Cập nhật thông tin từ student data (nếu có)
+            if (data.full_name) {
+                document.getElementById('profileFullName').textContent = data.full_name;
+                document.getElementById('fullName').value = data.full_name;
+            }
+            if (data.email) {
+                document.getElementById('email').value = data.email;
+            }
+            if (data.phone) {
+                document.getElementById('phone').value = data.phone;
+            }
+            
+            // Các trường chỉ có trong student profile
+            document.getElementById('studentCode').value = data.student_code || '';
+            document.getElementById('university').value = data.university || '';
+            document.getElementById('major').value = data.major || '';
+            document.getElementById('graduationYear').value = data.graduation_year || '';
+            document.getElementById('gpa').value = data.gpa || '';
+            document.getElementById('bio').value = data.bio || '';
+            
+            // Hiển thị kỹ năng
+            if (data.skills) {
+                displaySkills(data.skills);
+            }
+
+            // Cập nhật avatar nếu có
+            if (data.avatar_url) {
+                document.getElementById('avatarPreview').src = data.avatar_url;
+            }
+        }
+
+        // Hiển thị kỹ năng
+        function displaySkills(skillsString) {
+            const skillsContainer = document.getElementById('skillsContainer');
+            skillsContainer.innerHTML = '';
+            currentSkills = [];
+            
+            if (skillsString && skillsString.trim() !== '') {
+                const skills = skillsString.split(',').map(skill => skill.trim()).filter(skill => skill);
+                if (skills.length > 0) {
+                    skills.forEach(skill => {
+                        addSkillToDisplay(skill);
+                    });
+                    return;
+                }
+            }
+            
+            // Hiển thị thông báo khi chưa có kỹ năng
+            const message = isEditMode ? 
+                'Chưa có kỹ năng nào. Nhấn "Thêm kỹ năng" để bổ sung.' :
+                'Chưa có kỹ năng nào. Nhấn "Chỉnh sửa" để thêm kỹ năng.';
+                
+            skillsContainer.innerHTML = `
+                <div class="text-muted">
+                    <i class="bi bi-info-circle me-1"></i>
+                    ${message}
+                </div>
+            `;
+        }
+
+        // Thêm kỹ năng vào hiển thị
+        function addSkillToDisplay(skillName) {
+            if (!currentSkills.includes(skillName)) {
+                currentSkills.push(skillName);
+                
+                const skillsContainer = document.getElementById('skillsContainer');
+                
+                // Xóa thông báo "chưa có kỹ năng" nếu đang hiển thị
+                if (skillsContainer.querySelector('.text-muted')) {
+                    skillsContainer.innerHTML = '';
+                }
+                
+                const skillBadge = document.createElement('span');
+                skillBadge.className = 'badge bg-primary p-2 skill-badge';
+                skillBadge.textContent = skillName;
+                
+                if (isEditMode) {
+                    const removeBtn = document.createElement('span');
+                    removeBtn.className = 'skill-remove';
+                    removeBtn.innerHTML = '<i class="bi bi-x"></i>';
+                    removeBtn.onclick = function() {
+                        removeSkill(skillName);
+                    };
+                    skillBadge.appendChild(removeBtn);
+                }
+                
+                skillsContainer.appendChild(skillBadge);
+            }
+        }
+
+        // Xóa kỹ năng
+        function removeSkill(skillName) {
+            currentSkills = currentSkills.filter(skill => skill !== skillName);
+            displaySkills(currentSkills.join(', '));
+        }
+
+        // Bật/tắt chế độ chỉnh sửa
+        function toggleEditMode() {
+            const inputs = document.querySelectorAll('#profileCard input, #profileCard textarea');
+            const editBtn = document.getElementById('editToggleBtn');
+            const saveButtons = document.getElementById('saveButtons');
+            const addSkillBtn = document.getElementById('addSkillBtn');
+            
+            isEditMode = !isEditMode;
+            
+            inputs.forEach(input => {
+                if (input.id !== 'email') { // Không cho sửa email
+                    input.readOnly = !isEditMode;
+                    if (isEditMode) {
+                        input.classList.remove('is-invalid');
+                    }
+                }
+            });
+            
+            if (isEditMode) {
+                // Lưu dữ liệu gốc
+                originalData = {
+                    fullName: document.getElementById('fullName').value,
+                    phone: document.getElementById('phone').value,
+                    studentCode: document.getElementById('studentCode').value,
+                    university: document.getElementById('university').value,
+                    major: document.getElementById('major').value,
+                    graduationYear: document.getElementById('graduationYear').value,
+                    gpa: document.getElementById('gpa').value,
+                    bio: document.getElementById('bio').value,
+                    skills: currentSkills.join(', ')
+                };
+                
+                editBtn.innerHTML = '<i class="bi bi-x me-1"></i>Hủy';
+                editBtn.classList.remove('btn-outline-primary');
+                editBtn.classList.add('btn-secondary');
+                saveButtons.style.display = 'flex';
+                addSkillBtn.style.display = 'block';
+                
+                // Refresh skills display to show remove buttons
+                displaySkills(currentSkills.join(', '));
+            } else {
+                editBtn.innerHTML = '<i class="bi bi-pencil me-1"></i>Chỉnh sửa';
+                editBtn.classList.remove('btn-secondary');
+                editBtn.classList.add('btn-outline-primary');
+                saveButtons.style.display = 'none';
+                addSkillBtn.style.display = 'none';
+                
+                // Refresh skills display to hide remove buttons
+                displaySkills(currentSkills.join(', '));
+            }
+        }
+
+        // Hủy chỉnh sửa
+        function cancelEdit() {
+            // Khôi phục dữ liệu gốc
+            document.getElementById('fullName').value = originalData.fullName;
+            document.getElementById('phone').value = originalData.phone;
+            document.getElementById('studentCode').value = originalData.studentCode;
+            document.getElementById('university').value = originalData.university;
+            document.getElementById('major').value = originalData.major;
+            document.getElementById('graduationYear').value = originalData.graduationYear;
+            document.getElementById('gpa').value = originalData.gpa;
+            document.getElementById('bio').value = originalData.bio;
+            
+            displaySkills(originalData.skills);
+            
+            toggleEditMode(); // Tắt chế độ chỉnh sửa
+        }
+
+        // Thêm kỹ năng từ modal
+        function addSkill() {
+            const skillNameInput = document.getElementById('skillName');
+            const skillName = skillNameInput.value.trim();
+            
+            if (!skillName) {
+                skillNameInput.classList.add('is-invalid');
+                return;
+            }
+            
+            skillNameInput.classList.remove('is-invalid');
+            addSkillToDisplay(skillName);
+            
+            // Reset form và đóng modal
+            document.getElementById('skillForm').reset();
+            const modal = bootstrap.Modal.getInstance(document.getElementById('skillModal'));
+            if (modal) {
+                modal.hide();
+            }
+        }
+
+        // Lưu thông tin profile
+        async function saveProfile() {
+            try {
+                // Validate form
+                if (!validateForm()) {
+                    showAlert('Vui lòng điền đầy đủ thông tin bắt buộc', 'warning');
+                    return;
+                }
+
+                const user = AUTH.getUser();
+                if (!user || !user.id) {
+                    throw new Error('Không tìm thấy thông tin người dùng');
+                }
+
+                const updatedData = {
+                    full_name: document.getElementById('fullName').value.trim(),
+                    phone: document.getElementById('phone').value.trim(),
+                    student_code: document.getElementById('studentCode').value.trim(),
+                    university: document.getElementById('university').value.trim(),
+                    major: document.getElementById('major').value.trim(),
+                    graduation_year: document.getElementById('graduationYear').value ? parseInt(document.getElementById('graduationYear').value) : null,
+                    gpa: document.getElementById('gpa').value ? parseFloat(document.getElementById('gpa').value) : null,
+                    bio: document.getElementById('bio').value.trim(),
+                    skills: currentSkills.join(', ')
+                };
+
+                console.log('Dữ liệu gửi đi:', updatedData);
+
+                // Hiển thị loading
+                document.getElementById('saveButton').style.display = 'none';
+                document.getElementById('saveLoading').style.display = 'flex';
+
+                // Kiểm tra xem student profile đã tồn tại chưa
+                const checkResponse = await fetch(`${API_BASE_URL}/students/user/${user.id}`);
+                let studentId;
+
+                if (!checkResponse.ok) {
+                    // Nếu chưa có profile, tạo mới
+                    const createResponse = await fetch(`${API_BASE_URL}/students`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            user_id: user.id,
+                            ...updatedData
+                        })
+                    });
+
+                    const createResult = await createResponse.json();
+                    
+                    if (!createResult.success) {
+                        throw new Error(createResult.message || 'Không thể tạo hồ sơ sinh viên');
+                    }
+                    
+                    studentId = createResult.data.student_id;
+                    showAlert('Đã tạo hồ sơ sinh viên mới thành công!', 'success');
+                } else {
+                    // Nếu đã có profile, cập nhật
+                    const checkResult = await checkResponse.json();
+                    studentId = checkResult.data.student_id;
+
+                    const updateResponse = await fetch(`${API_BASE_URL}/students/${studentId}`, {
+                        method: 'PUT',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify(updatedData)
+                    });
+
+                    const updateResult = await updateResponse.json();
+
+                    if (!updateResult.success) {
+                        throw new Error(updateResult.message || 'Có lỗi xảy ra khi lưu thông tin');
+                    }
+                }
+
+                showAlert('Cập nhật hồ sơ thành công!', 'success');
+                toggleEditMode(); // Tắt chế độ chỉnh sửa
+                
+                // Cập nhật thông tin user trong localStorage
+                const currentUser = AUTH.getUser();
+                if (currentUser) {
+                    currentUser.fullName = updatedData.full_name;
+                    currentUser.phone = updatedData.phone;
+                    localStorage.setItem('jobhub_user', JSON.stringify(currentUser));
+                    document.getElementById('userFullName').textContent = updatedData.full_name;
+                    document.getElementById('profileFullName').textContent = updatedData.full_name;
+                }
+                
+            } catch (error) {
+                console.error('Lỗi khi lưu hồ sơ:', error);
+                showAlert('Có lỗi xảy ra khi lưu thông tin hồ sơ: ' + error.message, 'danger');
+            } finally {
+                // Ẩn loading
+                document.getElementById('saveButton').style.display = 'block';
+                document.getElementById('saveLoading').style.display = 'none';
+            }
+        }
+
+        // Validate form
+        function validateForm() {
+            let isValid = true;
+            const requiredFields = ['fullName', 'email'];
+            
+            requiredFields.forEach(fieldId => {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    field.classList.add('is-invalid');
+                    isValid = false;
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+            
+            return isValid;
+        }
+
+        // Upload avatar
+        async function uploadAvatar(event) {
+            const file = event.target.files[0];
+            if (file) {
+                try {
+                    // Kiểm tra kích thước file (max 5MB)
+                    if (file.size > 5 * 1024 * 1024) {
+                        showAlert('Kích thước file quá lớn. Vui lòng chọn file nhỏ hơn 5MB.', 'warning');
+                        return;
+                    }
+
+                    // Kiểm tra loại file
+                    if (!file.type.startsWith('image/')) {
+                        showAlert('Vui lòng chọn file hình ảnh.', 'warning');
+                        return;
+                    }
+
+                    const user = AUTH.getUser();
+                    const formData = new FormData();
+                    formData.append('avatar', file);
+                    formData.append('userId', user.id);
+
+                    const response = await fetch(`${API_BASE_URL}/users/upload-avatar`, {
+                        method: 'POST',
+                        body: formData
+                    });
+
+                    const result = await response.json();
+
+                    if (result.success) {
+                        document.getElementById('avatarPreview').src = result.avatarUrl;
+                        showAlert('Avatar đã được cập nhật thành công!', 'success');
+                    } else {
+                        throw new Error(result.message);
+                    }
+                } catch (error) {
+                    console.error('Lỗi upload avatar:', error);
+                    // Fallback: hiển thị ảnh tạm thời
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('avatarPreview').src = e.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                    showAlert('Avatar đã được cập nhật tạm thời!', 'info');
+                }
+            }
+        }
+
+        // Hiển thị loading
+        function showLoading() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('profileCard').style.display = 'none';
+        }
+
+        // Ẩn loading
+        function hideLoading() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+            document.getElementById('profileCard').style.display = 'block';
+        }
+
+        // Hiển thị thông báo
+        function showAlert(message, type = 'info') {
+            const alertContainer = document.getElementById('alertContainer');
+            const alertId = 'alert-' + Date.now();
+            
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type} alert-dismissible fade show`;
+            alert.innerHTML = `
+                ${message}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            `;
+            
+            alertContainer.appendChild(alert);
+            
+            // Tự động xóa sau 5 giây
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, 5000);
+        }
+
+        // Đăng xuất
+        function handleLogout() {
+            AUTH.logout();
+        }
+
+        // Xử lý sự kiện cho skill modal
+        document.getElementById('skillModal').addEventListener('show.bs.modal', function () {
+            document.getElementById('skillForm').reset();
+        });
+
+        // Xử lý sự kiện input cho skill name
+        document.getElementById('skillName').addEventListener('input', function() {
+            this.classList.remove('is-invalid');
+        });
+    </script>
+</body>
+</html>

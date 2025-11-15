@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Sinh Viên - JobHub</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <style>
+        .dashboard-container {
+            min-height: 100vh;
+            background: #f8f9fa;
+            padding-top: 80px;
+        }
+        .welcome-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 16px;
+            padding: 2rem;
+        }
+        .stat-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            border-left: 4px solid var(--primary-color);
+        }
+        .loading-spinner {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="sticky-top bg-white shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-light">
+            <div class="container">
+                <a class="navbar-brand d-flex align-items-center" href="../index.html">
+                    <div class="logo-icon me-2">
+                        <i class="bi bi-briefcase"></i>
+                    </div>
+                    <span class="fw-bold">JobHub</span>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto me-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="student-dashboard.html">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="student-profile.html">Hồ sơ</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="job-search.html">Tìm việc</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="my-applications.html">Ứng tuyển</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="../blog.html">Blog</a>
+                        </li>
+                    </ul>
+                    <div class="d-flex gap-2 align-items-center">
+                        <a href="../shared/notifications.html" class="btn btn-outline-secondary btn-sm position-relative">
+                            <i class="bi bi-bell"></i>
+                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">0</span>
+                        </a>
+                        <div class="dropdown">
+                            <button class="btn btn-outline-primary dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-circle me-1"></i><span id="userName">Đang tải...</span>
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="student-profile.html">Hồ sơ</a></li>
+                                <li><a class="dropdown-item" href="../shared/settings.html">Cài đặt</a></li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li><a class="dropdown-item text-danger" onclick="handleLogout()">Đăng xuất</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Loading Spinner -->
+    <div class="text-center loading-spinner" id="loadingSpinner">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Đang tải...</span>
+        </div>
+        <p class="mt-2">Đang tải dashboard...</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-container" id="dashboardContent" style="display: none;">
+        <div class="container">
+            <!-- Welcome Section -->
+            <div class="welcome-card mb-4">
+                <div class="row align-items-center">
+                    <div class="col-md-8">
+                        <h1 class="fw-bold mb-2" id="welcomeMessage">Chào mừng trở lại! 🎓</h1>
+                        <p class="mb-0" id="welcomeSubtitle">Sẵn sàng khám phá cơ hội việc làm mới?</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <div class="badge bg-light text-primary fs-6">Sinh viên</div>
+                        <div class="mt-2">
+                            <small id="profileCompletion">Hồ sơ chưa hoàn thiện</small>
+                            <div class="progress mt-1" style="height: 6px;">
+                                <div class="progress-bar" id="profileProgress" style="width: 0%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="row g-4 mb-4">
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <h3 class="fw-bold text-primary" id="applicationsCount">0</h3>
+                        <p class="text-muted mb-0">Đã ứng tuyển</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <h3 class="fw-bold text-success" id="interviewsCount">0</h3>
+                        <p class="text-muted mb-0">Đang phỏng vấn</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <h3 class="fw-bold text-warning" id="savedJobsCount">0</h3>
+                        <p class="text-muted mb-0">Việc làm đã lưu</p>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="stat-card">
+                        <h3 class="fw-bold text-info" id="cvCount">0</h3>
+                        <p class="text-muted mb-0">CV đã tạo</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Hành động nhanh</h5>
+                            <div class="d-grid gap-2">
+                                <a href="job-search.html" class="btn btn-primary">
+                                    <i class="bi bi-search me-2"></i>Tìm việc ngay
+                                </a>
+                                <a href="cv-builder.html" class="btn btn-outline-primary">
+                                    <i class="bi bi-file-earmark-plus me-2"></i>Tạo CV mới
+                                </a>
+                                <a href="student-profile.html" class="btn btn-outline-primary">
+                                    <i class="bi bi-person-gear me-2"></i>Cập nhật hồ sơ
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Việc làm gợi ý</h5>
+                            <p class="text-muted">Dựa trên hồ sơ của bạn</p>
+                            <div id="suggestedJobs">
+                                <div class="text-center text-muted py-3">
+                                    <i class="bi bi-info-circle me-2"></i>
+                                    Hoàn thiện hồ sơ để nhận gợi ý việc làm phù hợp
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Hoạt động gần đây</h5>
+                            <div id="recentActivity">
+                                <div class="text-center text-muted py-4">
+                                    <i class="bi bi-clock-history display-4"></i>
+                                    <p class="mt-2">Chưa có hoạt động nào</p>
+                                    <a href="job-search.html" class="btn btn-primary btn-sm">Bắt đầu tìm việc</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container text-center">
+            <p class="mb-0">&copy; 2025 JobHub. Tất cả quyền được bảo lưu.</p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS Bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="../js/auth.js"></script>
+    
+    <script>
+        // Khởi tạo dashboard
+        document.addEventListener('DOMContentLoaded', function() {
+            // Kiểm tra đăng nhập
+            if (!AUTH.requireAuth()) return;
+
+            // Hiển thị thông tin user
+            const user = AUTH.getUser();
+            if (user) {
+                document.getElementById('userName').textContent = user.fullName;
+                document.getElementById('welcomeMessage').textContent = `Chào mừng trở lại, ${user.fullName}! 🎓`;
+            }
+
+            // Tải dữ liệu dashboard
+            loadDashboardData();
+        });
+
+        // Tải dữ liệu dashboard
+        async function loadDashboardData() {
+            showLoading();
+            
+            try {
+                // Lấy dữ liệu từ localStorage
+                const userData = AUTH.getUser();
+                const applications = JSON.parse(localStorage.getItem(`jobhub_applications_${userData.id}`) || '[]');
+                const savedJobs = JSON.parse(localStorage.getItem(`jobhub_saved_jobs_${userData.id}`) || '[]');
+                const userProfile = JSON.parse(localStorage.getItem(`jobhub_student_profile_${userData.id}`) || '{}');
+
+                // Cập nhật thống kê
+                document.getElementById('applicationsCount').textContent = applications.length;
+                document.getElementById('savedJobsCount').textContent = savedJobs.length;
+                
+                // Đếm số lượng đang phỏng vấn
+                const interviewingCount = applications.filter(app => 
+                    app.status === 'reviewing' || app.status === 'interviewing'
+                ).length;
+                document.getElementById('interviewsCount').textContent = interviewingCount;
+
+                // Kiểm tra CV
+                const hasCV = !!userProfile.resumeUrl;
+                document.getElementById('cvCount').textContent = hasCV ? '1' : '0';
+
+                // Tính % hoàn thiện hồ sơ
+                const profileCompletion = calculateProfileCompletion(userProfile);
+                document.getElementById('profileProgress').style.width = `${profileCompletion}%`;
+                document.getElementById('profileCompletion').textContent = 
+                    profileCompletion === 100 ? 'Hồ sơ đã hoàn thiện ✓' : `Hồ sơ hoàn thiện ${profileCompletion}%`;
+
+                // Hiển thị nội dung
+                hideLoading();
+
+            } catch (error) {
+                console.error('Lỗi tải dashboard:', error);
+                hideLoading();
+                alert('Có lỗi xảy ra khi tải dữ liệu dashboard');
+            }
+        }
+
+        // Tính % hoàn thiện hồ sơ
+        function calculateProfileCompletion(profile) {
+            const fields = [
+                profile.university,
+                profile.major, 
+                profile.graduationYear,
+                profile.skills,
+                profile.bio
+            ];
+            
+            const completedFields = fields.filter(field => field && field.trim() !== '').length;
+            return Math.round((completedFields / fields.length) * 100);
+        }
+
+        // Hiển thị loading
+        function showLoading() {
+            document.getElementById('loadingSpinner').style.display = 'block';
+            document.getElementById('dashboardContent').style.display = 'none';
+        }
+
+        // Ẩn loading
+        function hideLoading() {
+            document.getElementById('loadingSpinner').style.display = 'none';
+            document.getElementById('dashboardContent').style.display = 'block';
+        }
+    </script>
+</body>
+</html>
